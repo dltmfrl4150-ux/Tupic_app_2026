@@ -1,0 +1,300 @@
+{
+  "@@locale": "en",
+  "appName": "TUPIC",
+  "helloUser": "Hello, {name}!",
+  "@helloUser": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "menuOpen": "Open menu",
+  "menuClose": "Close menu",
+  "menuChannels": "Channels",
+  "menuCreateChannel": "Create channel",
+  "menuManageChannels": "Manage channels",
+  "menuImportSharedChannel": "Import shared channel",
+  "menuSettings": "Settings",
+  "menuMyAccount": "My account",
+  "menuPremiumHint": "Premium plans arrive in a later update.",
+  "myChannels": "My Channels",
+  "recommended": "Recommended",
+  "exploreMyContent": "Explore My Content",
+  "createChannelCard": "Create channel",
+  "kidsBadge": "Kids",
+  "generalBadge": "General",
+  "videoCount": "{count} videos",
+  "@videoCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "playChannel": "Play",
+  "categoryAll": "All",
+  "categoryEnglish": "English",
+  "categoryMusic": "Music",
+  "categoryScience": "Science",
+  "categoryArt": "Art",
+  "categoryAnimals": "Animals",
+  "categoryOther": "Other",
+  "loading": "Loading…",
+  "errorTitle": "Something went wrong",
+  "errorRetry": "Try again",
+  "emptyChannelsTitle": "No channels yet",
+  "emptyChannelsBody": "Create your first TUPIC channel to start curating YouTube content.",
+  "emptyRecommendedTitle": "No recommendations yet",
+  "emptyRecommendedBody": "Recommendations appear after channels have popular videos.",
+  "emptyExploreTitle": "No videos in this category",
+  "emptyExploreBody": "Try another category or add more videos to your channels.",
+  "mockDataBanner": "Demo data — not linked to a live account",
+  "demoContentBanner": "Recommended & Explore show demo content — not your saved videos",
+  "comingSoonTitle": "Coming soon",
+  "comingSoonBody": "This feature will be available in a later update.",
+  "comingSoonOk": "OK",
+  "settingsTitle": "Settings",
+  "settingsLanguage": "Language",
+  "languageSystem": "System default",
+  "languageKorean": "한국어",
+  "languageEnglish": "English",
+  "accountTitle": "My account",
+  "accountPlaceholder": "Sign-in will be available when Firebase Authentication is connected.",
+  "createChannelDialogTitle": "Create channel",
+  "createChannelNameHint": "Channel name",
+  "createChannelKidsCheckbox": "Kids channel",
+  "cancel": "Cancel",
+  "create": "Create",
+  "save": "Save",
+  "delete": "Delete",
+  "channelNameRequired": "Enter a channel name.",
+  "selectAudienceTitle": "What would you like to explore?",
+  "selectAudienceKids": "Kids content",
+  "selectAudienceGeneral": "General content",
+  "back": "Back",
+  "premiumTitle": "Premium",
+  "premiumBody": "More channels, higher limits, and auto-sync. Billing is not enabled yet.",
+  "premiumLimitTitle": "Free plan channel limit",
+  "premiumLimitBody": "The free plan allows up to {count} channel. Upgrade to Premium for more channels.",
+  "@premiumLimitBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "premiumBillingDisabled": "Payments are not enabled in this version.",
+  "channelDetailTitle": "Channel",
+  "channelNotFound": "This channel is no longer available.",
+  "manageThisChannel": "Manage channel",
+  "channelVideosComingSoon": "Adding YouTube videos will be available in the next step.",
+  "playOrderLabel": "Playback order",
+  "playOrderSequential": "Sequential",
+  "playOrderShuffle": "Shuffle",
+  "channelTypeLabel": "Channel type",
+  "registeredVideosLabel": "Registered videos",
+  "channelRenamed": "Channel name updated.",
+  "deleteChannel": "Delete channel",
+  "deleteChannelTitle": "Delete channel?",
+  "deleteChannelBody": "Delete \"{name}\"? Only this channel’s local data will be removed.",
+  "@deleteChannelBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "parentalGateTitle": "Parent check",
+  "parentalGateBody": "Enter your birth year to continue to kids channel management.",
+  "parentalGateHint": "YYYY",
+  "parentalGateContinue": "Continue",
+  "parentalGateInvalidYear": "Enter a valid 4-digit birth year.",
+  "parentalGateDenied": "Access is limited to ages 18 and over.",
+  "parentalGateDisclaimer": "This is a simple access check, not legal age verification.",
+  "importSharedPlaceholder": "Importing a shared TUPIC channel will be available in a later update.",
+  "addContentTitle": "Add content",
+  "manageContentTitle": "Manage content",
+  "addContentUrlHint": "Paste a YouTube link",
+  "paste": "Paste",
+  "analyzeUrl": "Analyze",
+  "registerContent": "Register",
+  "displayNameHint": "Display name",
+  "contentTypeVideo": "Video",
+  "contentTypePlaylist": "Playlist",
+  "contentTypeCreator": "Creator",
+  "contentUrlEmpty": "Enter a YouTube URL.",
+  "contentUrlInvalid": "This YouTube link is not supported.",
+  "contentUrlUnsupportedHost": "Only official YouTube links are allowed.",
+  "contentUrlRedirectBlocked": "Redirect links are not followed.",
+  "contentDuplicateVideo": "This video is already registered in this channel.",
+  "contentVideoLimit": "Free plan allows up to {count} videos per channel.",
+  "@contentVideoLimit": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "contentAmbiguousTitle": "This link includes a video and a playlist",
+  "contentAmbiguousVideo": "Add this video only",
+  "contentAmbiguousPlaylist": "Add the whole playlist",
+  "playlistPendingFetch": "Playlist source saved. Video list fetch waits for YouTube API.",
+  "creatorPendingFetch": "Creator source saved. Video list fetch waits for YouTube API.",
+  "creatorImportModeLabel": "Import range",
+  "creatorImportRecent30": "Latest 30",
+  "creatorImportAll": "All videos",
+  "creatorImportManual": "Pick manually",
+  "creatorManualNeedsApi": "Manual selection will be available after YouTube API is connected.",
+  "creatorSortLabel": "Sort order",
+  "creatorSortNewest": "Newest",
+  "creatorSortOldest": "Oldest",
+  "creatorSortShuffle": "Shuffle",
+  "autoSyncLabel": "Auto sync (Premium)",
+  "autoSyncFreeLocked": "Auto sync is Premium-only and is not running yet.",
+  "autoSyncPremiumHint": "Premium can auto-check once per day (not enabled in this build).",
+  "contentSourcesSection": "Content sources",
+  "contentVideosSection": "Videos",
+  "emptySourcesBody": "No content sources yet. Add a YouTube link to get started.",
+  "emptyVideosBody": "No confirmed videos yet. Individual video links appear here immediately.",
+  "apiNotConnectedBanner": "Playlist and creator videos are not fetched until YouTube API is connected.",
+  "importStatusReady": "Ready",
+  "importStatusPending": "Waiting to fetch",
+  "importStatusFetching": "Fetching",
+  "importStatusFetched": "Fetched",
+  "importStatusPartial": "Partially fetched",
+  "importStatusFailed": "Failed",
+  "fetchPlaylistVideos": "Fetch videos",
+  "retryFetchPlaylist": "Retry",
+  "playlistFetchedCount": "Fetched {count} videos",
+  "@playlistFetchedCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "playlistFetchReport": "Imported: {imported} · Private/deleted excluded: {privateDeleted} · Not embeddable excluded: {notEmbeddable} · Duplicates: {duplicates}",
+  "@playlistFetchReport": {
+    "placeholders": {
+      "imported": { "type": "int" },
+      "privateDeleted": { "type": "int" },
+      "notEmbeddable": { "type": "int" },
+      "duplicates": { "type": "int" }
+    }
+  },
+  "playlistFetchReportPruned": "Cleaned {pruned} previously saved unplayable videos",
+  "@playlistFetchReportPruned": {
+    "placeholders": {
+      "pruned": { "type": "int" }
+    }
+  },
+  "localServerRequired": "Local YouTube server required. Run npm start in the server folder.",
+  "localApiKeyRequired": "YOUTUBE_API_KEY is not set on the local server. Check server/.env.",
+  "quotaExceededMessage": "YouTube API quota exceeded. Try again later.",
+  "dailyLocalLimitMessage": "Local daily API request limit reached.",
+  "playlistFetchUnexpectedError": "Could not fetch the playlist. Fully restart the app, confirm the local server (npm start), then try again.",
+  "lastFetchedAtLabel": "Last fetched: {time}",
+  "@lastFetchedAtLabel": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "videoLimitLabel": "{current} / {max}",
+  "@videoLimitLabel": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "queuePreviewCount": "Playback queue: {count}",
+  "@queuePreviewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteSourceTitle": "Delete content source?",
+  "deleteSourceBody": "Delete \"{name}\"? Videos only linked to this source will be removed. Videos linked to other sources stay.",
+  "@deleteSourceBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteSourceResult": "Removed {removed} video(s). Kept {kept} shared video(s).",
+  "@deleteSourceResult": {
+    "placeholders": {
+      "removed": {
+        "type": "int"
+      },
+      "kept": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteVideoTitle": "Delete video?",
+  "deleteVideoBody": "Delete \"{title}\" from this channel?",
+  "@deleteVideoBody": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "excludeVideo": "Exclude from playback",
+  "restoreVideo": "Restore to playback",
+  "videoExcluded": "Excluded",
+  "reorderHint": "Long-press and drag to change video order.",
+  "playerPause": "Pause",
+  "playerVideoList": "Video list",
+  "playerSwitchChannel": "Switch channel",
+  "playerChannelListTitle": "TUPICK channels",
+  "playerLock": "Screen lock",
+  "playerUnlock": "Unlock",
+  "playerUnlockHint": "Long press to unlock",
+  "playerNextVideo": "Next video",
+  "playerRetry": "Retry",
+  "playerEmptyQueue": "No videos to play",
+  "playerVideoUnavailable": "This video cannot be played",
+  "playerAllVideosUnavailable": "No playable videos remain in this queue",
+  "playerPlaybackError": "A playback error occurred",
+  "playerLastVideo": "That was the last video",
+  "playerReplayQueue": "Play again from start",
+  "playerWebOrientationHint": "Browsers cannot lock orientation. Use landscape layout to watch.",
+  "playNow": "Play now",
+  "playerResume": "Resume",
+  "playerLastPosition": "Last watched position",
+  "playerPreparing": "Preparing playback…",
+  "playlistFetchPending": "Waiting to fetch videos",
+  "playlistVideosNotFetchedYet": "Playlist videos have not been fetched yet. Tap Fetch videos in content management.",
+  "playableVideosOnlyHint": "Only confirmed playable videos are listed.",
+  "sourceVsPlayableCount": "{sources} sources · {playable} playable",
+  "@sourceVsPlayableCount": {
+    "placeholders": {
+      "sources": { "type": "int" },
+      "playable": { "type": "int" }
+    }
+  },
+  "settingsLegalSection": "Terms & privacy",
+  "termsOfServiceTitle": "Terms of Service",
+  "privacyPolicyTitle": "Privacy Policy",
+  "legalView": "View",
+  "legalVersionLabel": "Document version {version}",
+  "@legalVersionLabel": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "legalKoreanDraftNotice": "The full text is a Korean draft. Unconfirmed business details are marked TODO in the document.",
+  "consentTitle": "TUPICK service notice",
+  "consentSubtitle": "Accept required items to continue. Opening a document alone does not count as consent.",
+  "consentTermsRequired": "[Required] Agree to the Terms of Service",
+  "consentPrivacyCollectionRequired": "[Required] Agree to personal information collection & use",
+  "privacyPolicyViewAlways": "View Privacy Policy",
+  "consentContinue": "Agree and continue"
+}

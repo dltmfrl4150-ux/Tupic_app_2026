@@ -1,0 +1,18 @@
+{
+  "name": "tupic-local-youtube-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local-only YouTube Data API v3 proxy for TUPIC STEP 4A (no cloud deploy).",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}

@@ -1,0 +1,49 @@
+# Implementation Status
+
+Legend: **완료** / **Mock** / **미구현** / **검증 필요**
+
+| Area | Status | Notes |
+| --- | --- | --- |
+| Flutter project bootstrap | 완료 | `tupic`, android/ios/web |
+| Design tokens / dark theme | 완료 | Confirmed palette |
+| Space hero illustration | 완료 | STEP 5A-2: 2D `SpacePatternPainter` (cell 320px, seed); no 3D banner |
+| Home responsive layout | 완료 | Mobile/tablet/web widths |
+| Right hamburger + end drawer | 완료 | Channel list expandable |
+| Menu navigation | 완료 | Detail / create / manage / placeholders |
+| My channel cards | 완료 | Local user channels |
+| Channel create / manage / delete | 완료 | Free 1-channel limit |
+| Parental gate | 완료 | Kids channel management + player unlock |
+| Locale ko/en | 완료 | ARB + SharedPreferences |
+| YouTube URL parser | 완료 | Video / playlist / creator / ambiguous |
+| ContentSource + ChannelVideo models | 완료 | Source ≠ playback list |
+| Local content persistence | 완료 | `tupic_content_sources_v1`, `tupic_channel_videos_v1` |
+| Add content UI | 완료 | Paste / analyze / register |
+| Individual video register | 완료 | No API metadata resolve |
+| Playlist / creator source register | 완료 | pendingFetch, no invented videos |
+| Content manage (exclude/reorder/delete) | 완료 | Multi-source safe delete |
+| Playback queue builder | 완료 | Pure logic + unit tests |
+| Free video limit 100 | 완료 | Unique active IDs |
+| YouTube IFrame player | 완료 | `youtube_player_iframe` 6.0.2 |
+| Landscape player UI | 완료 | Overlay / queue strip / lock |
+| Orientation lock (player only) | 완료 | Portrait app chrome, landscape player |
+| Sequential / shuffle playback | 완료 | Via `PlaybackQueueBuilder` + session |
+| Home/drawer direct play | 완료 | Card/drawer play vs open separated |
+| First-video auto start | 완료 | `fromVideoId` + Ready-queued load |
+| Per-channel resume progress | 완료 | `tupic_playback_progress_v1` |
+| Auto sync toggle | Mock | Premium-locked, not scheduled |
+| Recommended / Explore | Mock | Demo only; not auto-added |
+| YouTube Data API (playlist fetch) | 완료(로컬) | Loopback Node proxy + pendingFetch import |
+| Creator upload fetch | 미구현 | Still stub / pendingFetch |
+| Terms of Service / Privacy Policy | 완료 | STEP 5B: KO drafts + settings links; TODO business fields |
+| Consent UI + local records | 완료 | `ConsentPanel` / `ConsentFlow` for STEP 5C; no forced popup |
+| Firebase | 미구현 | Repository swap-ready |
+| Premium billing | 미구현 | Upsell only |
+| Share import / ads / AI classify | 미구현 | — |
+
+## STEP 3B notes
+
+- Package: `youtube_player_iframe: ^6.0.2` (official IFrame Player API)
+- Android: `INTERNET` permission added; portrait default, landscape on player enter
+- Web: IFrame playback supported; forced orientation not available — landscape layout + hint
+- Titles remain provisional until STEP 4 metadata API
+- Playlist/creator sources still contribute no videos until API fetch
