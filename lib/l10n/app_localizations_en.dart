@@ -161,6 +161,58 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sign-in will be available when Firebase Authentication is connected.';
 
   @override
+  String get helloGuest => 'Hello!';
+
+  @override
+  String get accountGuestTitle => 'Account';
+
+  @override
+  String get accountGuestBody =>
+      'Sign in with Google to see your account details. You can keep using local channels without signing in.';
+
+  @override
+  String get accountContinueWithGoogle => 'Continue with Google';
+
+  @override
+  String get accountSignOut => 'Sign out';
+
+  @override
+  String get accountSignedOut =>
+      'Signed out. Local channel data is kept on this device.';
+
+  @override
+  String get accountSignInSuccess => 'Signed in with Google.';
+
+  @override
+  String get accountSignInFailed => 'Sign-in failed. Please try again.';
+
+  @override
+  String get accountSignInBusy => 'Sign-in is already in progress.';
+
+  @override
+  String get accountSignInNetworkError =>
+      'Network error. Check your connection and try again.';
+
+  @override
+  String get accountSignInUnavailable =>
+      'Google sign-in is unavailable in this build. Use the Android Firebase build.';
+
+  @override
+  String get accountConsentRequired =>
+      'Please accept the required terms to continue.';
+
+  @override
+  String get accountAnonymousName => 'Google user';
+
+  @override
+  String get accountLocalDataNote =>
+      'Local channels, videos, and resume data are not shown as owned by this Google account and are not uploaded automatically.';
+
+  @override
+  String get accountUnder14Policy =>
+      'Independent accounts for users under 14 are not allowed until a lawful parental-consent process is ready. A Google account alone is not age verification, and this build does not provide reliable age verification.';
+
+  @override
   String get createChannelDialogTitle => 'Create channel';
 
   @override
@@ -610,7 +662,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyPolicyTitle => 'Privacy Policy';
 
   @override
-  String get legalView => 'View';
+  String get legalView => 'View more';
 
   @override
   String legalVersionLabel(String version) {
@@ -618,8 +670,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get legalDraftNotice =>
+      'This text is a draft. Unconfirmed business details are marked TODO in the document.';
+
+  @override
   String get legalKoreanDraftNotice =>
-      'The full text is a Korean draft. Unconfirmed business details are marked TODO in the document.';
+      'This text is a draft. Unconfirmed business details are marked TODO in the document.';
 
   @override
   String get consentTitle => 'TUPICK service notice';

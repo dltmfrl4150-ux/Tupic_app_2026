@@ -155,6 +155,55 @@ class AppLocalizationsKo extends AppLocalizations {
   String get accountPlaceholder => 'Firebase Authentication 연동 후 로그인할 수 있습니다.';
 
   @override
+  String get helloGuest => '안녕하세요!';
+
+  @override
+  String get accountGuestTitle => '계정';
+
+  @override
+  String get accountGuestBody =>
+      'Google로 로그인하면 계정 정보를 확인할 수 있습니다. 로그인 없이도 로컬에서 채널을 계속 이용할 수 있습니다.';
+
+  @override
+  String get accountContinueWithGoogle => 'Google로 계속하기';
+
+  @override
+  String get accountSignOut => '로그아웃';
+
+  @override
+  String get accountSignedOut => '로그아웃되었습니다. 로컬 채널 데이터는 유지됩니다.';
+
+  @override
+  String get accountSignInSuccess => 'Google 로그인에 성공했습니다.';
+
+  @override
+  String get accountSignInFailed => '로그인에 실패했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get accountSignInBusy => '로그인이 이미 진행 중입니다.';
+
+  @override
+  String get accountSignInNetworkError => '네트워크 오류입니다. 연결을 확인한 뒤 다시 시도해 주세요.';
+
+  @override
+  String get accountSignInUnavailable =>
+      '이 빌드에서는 Google 로그인을 사용할 수 없습니다. Android Firebase 빌드에서 이용해 주세요.';
+
+  @override
+  String get accountConsentRequired => '서비스 이용을 위해 필수 약관에 동의해 주세요.';
+
+  @override
+  String get accountAnonymousName => 'Google 사용자';
+
+  @override
+  String get accountLocalDataNote =>
+      '로컬에 저장된 채널·영상·이어보기는 이 Google 계정 소유로 표시되거나 자동 업로드되지 않습니다.';
+
+  @override
+  String get accountUnder14Policy =>
+      '만 14세 미만의 독립 계정 가입은 법정대리인 동의 확인 절차가 준비되기 전까지 허용하지 않는 정책입니다. Google 계정만으로 연령이 확인되었다고 보지 않으며, 현재 단계에서 신뢰할 수 있는 연령 인증은 제공하지 않습니다.';
+
+  @override
   String get createChannelDialogTitle => '채널 만들기';
 
   @override
@@ -587,7 +636,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get privacyPolicyTitle => '개인정보처리방침';
 
   @override
-  String get legalView => '보기';
+  String get legalView => '자세히 보기';
 
   @override
   String legalVersionLabel(String version) {
@@ -595,8 +644,12 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get legalDraftNotice =>
+      '본문은 초안입니다. 사업자·연락처 등 미확정 항목은 문서 내 TODO로 표시됩니다.';
+
+  @override
   String get legalKoreanDraftNotice =>
-      '본문은 한국어 초안입니다. 사업자·연락처 등 미확정 항목은 문서 내 TODO로 표시됩니다.';
+      '본문은 초안입니다. 사업자·연락처 등 미확정 항목은 문서 내 TODO로 표시됩니다.';
 
   @override
   String get consentTitle => 'TUPICK 서비스 이용 안내';

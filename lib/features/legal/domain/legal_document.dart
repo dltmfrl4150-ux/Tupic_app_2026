@@ -17,8 +17,8 @@ class LegalDocumentVersions {
   LegalDocumentVersions._();
 
   static const termsOfService = '2026-11-06';
-  static const privacyPolicy = '2026-11-06';
-  static const privacyCollectionConsent = '2026-11-06';
+  static const privacyPolicy = '2026-11-09';
+  static const privacyCollectionConsent = '2026-11-09';
 }
 
 enum LegalDocumentKind {

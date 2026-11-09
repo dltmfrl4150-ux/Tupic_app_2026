@@ -11,6 +11,7 @@ import '../../../shared/models/tupic_channel.dart';
 import '../../../shared/models/video_item.dart';
 import '../../../core/widgets/placeholder_feature_page.dart';
 import '../../account/presentation/account_page.dart';
+import '../../auth/presentation/auth_controller.dart';
 import '../../channels/presentation/channel_detail_page.dart';
 import '../../channels/presentation/channel_manage_list_page.dart';
 import '../../channels/presentation/channels_controller.dart';
@@ -232,10 +233,20 @@ class _HomeScrollBody extends StatelessWidget {
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
-          child: SpaceHeroIllustration(
-            height: heroHeight,
-            title: 'TUPICK',
-            subtitle: l10n.helloUser(userDisplayName),
+          child: ListenableBuilder(
+            listenable: AuthScope.of(context),
+            builder: (context, _) {
+              final auth = AuthScope.of(context);
+              final name = auth.displayName;
+              final subtitle = (name != null && name.isNotEmpty)
+                  ? l10n.helloUser(name)
+                  : l10n.helloGuest;
+              return SpaceHeroIllustration(
+                height: heroHeight,
+                title: 'TUPICK',
+                subtitle: subtitle,
+              );
+            },
           ),
         ),
         if (isMock)

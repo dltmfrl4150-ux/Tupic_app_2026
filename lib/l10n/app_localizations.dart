@@ -380,6 +380,96 @@ abstract class AppLocalizations {
   /// **'Sign-in will be available when Firebase Authentication is connected.'**
   String get accountPlaceholder;
 
+  /// No description provided for @helloGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello!'**
+  String get helloGuest;
+
+  /// No description provided for @accountGuestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get accountGuestTitle;
+
+  /// No description provided for @accountGuestBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Google to see your account details. You can keep using local channels without signing in.'**
+  String get accountGuestBody;
+
+  /// No description provided for @accountContinueWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get accountContinueWithGoogle;
+
+  /// No description provided for @accountSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get accountSignOut;
+
+  /// No description provided for @accountSignedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed out. Local channel data is kept on this device.'**
+  String get accountSignedOut;
+
+  /// No description provided for @accountSignInSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in with Google.'**
+  String get accountSignInSuccess;
+
+  /// No description provided for @accountSignInFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in failed. Please try again.'**
+  String get accountSignInFailed;
+
+  /// No description provided for @accountSignInBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in is already in progress.'**
+  String get accountSignInBusy;
+
+  /// No description provided for @accountSignInNetworkError.
+  ///
+  /// In en, this message translates to:
+  /// **'Network error. Check your connection and try again.'**
+  String get accountSignInNetworkError;
+
+  /// No description provided for @accountSignInUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Google sign-in is unavailable in this build. Use the Android Firebase build.'**
+  String get accountSignInUnavailable;
+
+  /// No description provided for @accountConsentRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please accept the required terms to continue.'**
+  String get accountConsentRequired;
+
+  /// No description provided for @accountAnonymousName.
+  ///
+  /// In en, this message translates to:
+  /// **'Google user'**
+  String get accountAnonymousName;
+
+  /// No description provided for @accountLocalDataNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Local channels, videos, and resume data are not shown as owned by this Google account and are not uploaded automatically.'**
+  String get accountLocalDataNote;
+
+  /// No description provided for @accountUnder14Policy.
+  ///
+  /// In en, this message translates to:
+  /// **'Independent accounts for users under 14 are not allowed until a lawful parental-consent process is ready. A Google account alone is not age verification, and this build does not provide reliable age verification.'**
+  String get accountUnder14Policy;
+
   /// No description provided for @createChannelDialogTitle.
   ///
   /// In en, this message translates to:
@@ -1174,7 +1264,7 @@ abstract class AppLocalizations {
   /// No description provided for @legalView.
   ///
   /// In en, this message translates to:
-  /// **'View'**
+  /// **'View more'**
   String get legalView;
 
   /// No description provided for @legalVersionLabel.
@@ -1183,10 +1273,16 @@ abstract class AppLocalizations {
   /// **'Document version {version}'**
   String legalVersionLabel(String version);
 
+  /// No description provided for @legalDraftNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'This text is a draft. Unconfirmed business details are marked TODO in the document.'**
+  String get legalDraftNotice;
+
   /// No description provided for @legalKoreanDraftNotice.
   ///
   /// In en, this message translates to:
-  /// **'The full text is a Korean draft. Unconfirmed business details are marked TODO in the document.'**
+  /// **'This text is a draft. Unconfirmed business details are marked TODO in the document.'**
   String get legalKoreanDraftNotice;
 
   /// No description provided for @consentTitle.

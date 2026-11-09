@@ -202,7 +202,7 @@ void main() {
     await pumpFrames(tester);
 
     expect(find.text('My Channels'), findsOneWidget);
-    expect(find.text('Hello, Charlie!'), findsOneWidget);
+    expect(find.text('Hello!'), findsOneWidget);
   });
 
   testWidgets('error demo feed state renders retry', (tester) async {

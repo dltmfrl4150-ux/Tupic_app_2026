@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import '../features/auth/presentation/auth_controller.dart';
 import '../features/channels/data/local_channel_repository.dart';
 import '../features/channels/presentation/channels_controller.dart';
 import '../features/content/data/http_youtube_playlist_provider.dart';
@@ -24,6 +25,8 @@ class TupicApp extends StatefulWidget {
   const TupicApp({
     super.key,
     required this.localeController,
+    this.firebaseReady = false,
+    this.authController,
     this.homeRepository,
     this.channelRepository,
     this.contentRepository,
@@ -34,6 +37,12 @@ class TupicApp extends StatefulWidget {
   });
 
   final LocaleController localeController;
+
+  /// True only after successful Firebase.initializeApp (Android).
+  final bool firebaseReady;
+
+  /// Optional override for tests.
+  final AuthController? authController;
   final HomeRepository? homeRepository;
   final ChannelRepository? channelRepository;
   final ContentRepository? contentRepository;
@@ -81,14 +90,20 @@ class _TupicAppState extends State<TupicApp> {
     channelsController: _channelsController,
   );
 
+  late final AuthController _authController =
+      widget.authController ??
+      AuthController(firebaseReady: widget.firebaseReady);
+
   bool _ownsChannelsController = false;
   bool _ownsContentController = false;
+  bool _ownsAuthController = false;
 
   @override
   void initState() {
     super.initState();
     _ownsChannelsController = widget.channelsController == null;
     _ownsContentController = widget.contentController == null;
+    _ownsAuthController = widget.authController == null;
     _channelsController.load().then((_) {
       final ids = _channelsController.channels.map((c) => c.id);
       return _contentController.refreshCounts(ids);
@@ -98,6 +113,9 @@ class _TupicAppState extends State<TupicApp> {
   @override
   void dispose() {
     _homeController.dispose();
+    if (_ownsAuthController) {
+      _authController.dispose();
+    }
     if (_ownsContentController) {
       _contentController.dispose();
     }
@@ -111,39 +129,43 @@ class _TupicAppState extends State<TupicApp> {
   Widget build(BuildContext context) {
     return LocaleScope(
       controller: widget.localeController,
-      child: ChannelsScope(
-        controller: _channelsController,
-        child: ContentScope(
-          controller: _contentController,
-          child: PlaybackProgressScope(
-            repository: _progressRepository,
-            child: ListenableBuilder(
-              listenable: widget.localeController,
-              builder: (context, _) {
-                return MaterialApp(
-                  title: 'TUPIC',
-                  debugShowCheckedModeBanner: false,
-                  theme: TupicTheme.dark(),
-                  locale: widget.localeController.localeOverride,
-                  supportedLocales: AppLocalizations.supportedLocales,
-                  localizationsDelegates: const [
-                    AppLocalizations.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  localeResolutionCallback: (locale, supported) {
-                    if (locale == null) return const Locale('en');
-                    for (final supportedLocale in supported) {
-                      if (supportedLocale.languageCode == locale.languageCode) {
-                        return supportedLocale;
+      child: AuthScope(
+        controller: _authController,
+        child: ChannelsScope(
+          controller: _channelsController,
+          child: ContentScope(
+            controller: _contentController,
+            child: PlaybackProgressScope(
+              repository: _progressRepository,
+              child: ListenableBuilder(
+                listenable: widget.localeController,
+                builder: (context, _) {
+                  return MaterialApp(
+                    title: 'TUPIC',
+                    debugShowCheckedModeBanner: false,
+                    theme: TupicTheme.dark(),
+                    locale: widget.localeController.localeOverride,
+                    supportedLocales: AppLocalizations.supportedLocales,
+                    localizationsDelegates: const [
+                      AppLocalizations.delegate,
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                    ],
+                    localeResolutionCallback: (locale, supported) {
+                      if (locale == null) return const Locale('en');
+                      for (final supportedLocale in supported) {
+                        if (supportedLocale.languageCode ==
+                            locale.languageCode) {
+                          return supportedLocale;
+                        }
                       }
-                    }
-                    return const Locale('en');
-                  },
-                  home: HomePage(controller: _homeController),
-                );
-              },
+                      return const Locale('en');
+                    },
+                    home: HomePage(controller: _homeController),
+                  );
+                },
+              ),
             ),
           ),
         ),

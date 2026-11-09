@@ -13,7 +13,8 @@ class LegalDocumentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final doc = legalDocumentContent(kind);
+    final locale = Localizations.localeOf(context);
+    final doc = legalDocumentContent(kind, locale: locale);
 
     return Scaffold(
       appBar: AppBar(
@@ -37,7 +38,7 @@ class LegalDocumentPage extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            l10n.legalKoreanDraftNotice,
+            l10n.legalDraftNotice,
             style: const TextStyle(
               color: TupicColors.mutedText,
               fontSize: 12,

@@ -36,7 +36,8 @@ Legend: **완료** / **Mock** / **미구현** / **검증 필요**
 | Creator upload fetch | 미구현 | Still stub / pendingFetch |
 | Terms of Service / Privacy Policy | 완료 | STEP 5B: KO drafts + settings links; TODO business fields |
 | Consent UI + local records | 완료 | `ConsentPanel` / `ConsentFlow` for STEP 5C; no forced popup |
-| Firebase | 미구현 | Repository swap-ready |
+| Firebase Auth + Google sign-in (Android) | 완료 | STEP 5C-2: `tupic-project`, no Firestore/Functions |
+| Firebase | Auth only | Spark; no cloud channel sync |
 | Premium billing | 미구현 | Upsell only |
 | Share import / ads / AI classify | 미구현 | — |
 

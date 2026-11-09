@@ -41,8 +41,9 @@ void main() {
     expect(TermsOfServiceKo.body, contains('출시 전 확인 필요'));
     expect(PrivacyPolicyKo.body, contains('SharedPreferences'));
     expect(PrivacyPolicyKo.body, contains('현재 수집'));
-    expect(PrivacyPolicyKo.body, contains('향후 Google 로그인'));
+    expect(PrivacyPolicyKo.body, contains('Google 로그인'));
     expect(PrivacyPolicyKo.body, contains('Firebase Authentication'));
+    expect(PrivacyPolicyKo.body, contains('UID'));
     expect(PrivacyPolicyKo.body, contains('TODO'));
   });
 

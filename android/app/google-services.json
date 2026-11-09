@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "396875776930",
+    "project_id": "tupic-project",
+    "storage_bucket": "tupic-project.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396875776930:android:6d0a510fa61b906d3fa8fb",
+        "android_client_info": {
+          "package_name": "com.tupic.tupic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "396875776930-l0757nvqs70m8n5ob0a123nf3ccoocm5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tupic.tupic",
+            "certificate_hash": "700d2b22bd84b4611e0287551d390864f67d12d8"
+          }
+        },
+        {
+          "client_id": "396875776930-3tg2iou07b2g2ulaiidts83qo929tbb2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMJuQy9B7twFS6L7Juq9QG4QQHCb4BOJE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "396875776930-3tg2iou07b2g2ulaiidts83qo929tbb2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
