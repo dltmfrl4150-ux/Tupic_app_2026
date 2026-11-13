@@ -11,8 +11,7 @@ class AppEndDrawer extends StatefulWidget {
     required this.onOpenChannel,
     required this.onPlayChannel,
     required this.onCreateChannel,
-    required this.onManageChannels,
-    required this.onImportShared,
+    required this.onExploreChannels,
     required this.onOpenSettings,
     required this.onOpenAccount,
   });
@@ -21,8 +20,7 @@ class AppEndDrawer extends StatefulWidget {
   final ValueChanged<TupicChannel> onOpenChannel;
   final ValueChanged<TupicChannel> onPlayChannel;
   final VoidCallback onCreateChannel;
-  final VoidCallback onManageChannels;
-  final VoidCallback onImportShared;
+  final VoidCallback onExploreChannels;
   final VoidCallback onOpenSettings;
   final VoidCallback onOpenAccount;
 
@@ -135,14 +133,9 @@ class _AppEndDrawerState extends State<AppEndDrawer> {
                     onTap: () => _closeAnd(widget.onCreateChannel),
                   ),
                   _DrawerTile(
-                    icon: Icons.tune_rounded,
-                    label: l10n.menuManageChannels,
-                    onTap: () => _closeAnd(widget.onManageChannels),
-                  ),
-                  _DrawerTile(
-                    icon: Icons.link_rounded,
+                    icon: Icons.explore_outlined,
                     label: l10n.menuImportSharedChannel,
-                    onTap: () => _closeAnd(widget.onImportShared),
+                    onTap: () => _closeAnd(widget.onExploreChannels),
                   ),
                   _DrawerTile(
                     icon: Icons.settings_outlined,

@@ -10,9 +10,9 @@ import '../../content/presentation/add_content_page.dart';
 import '../../content/presentation/content_controller.dart';
 import '../../content/presentation/content_manage_page.dart';
 import '../../player/presentation/player_launcher.dart';
+import '../../share/presentation/share_channel_page.dart';
 import 'channel_manage_page.dart';
 import 'channels_controller.dart';
-import 'parental_gate_dialog.dart';
 
 class ChannelDetailPage extends StatefulWidget {
   const ChannelDetailPage({super.key, required this.channelId});
@@ -32,15 +32,7 @@ class _ChannelDetailPageState extends State<ChannelDetailPage> {
     });
   }
 
-  Future<void> _openChannelSettings(
-    BuildContext context,
-    TupicChannel channel,
-  ) async {
-    if (channel.isKidsChannel) {
-      final passed = await showParentalGateDialog(context);
-      if (!passed || !context.mounted) return;
-    }
-    if (!context.mounted) return;
+  Future<void> _openChannelSettings(TupicChannel channel) async {
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => ChannelManagePage(channelId: channel.id),
@@ -48,40 +40,79 @@ class _ChannelDetailPageState extends State<ChannelDetailPage> {
     );
   }
 
-  Future<void> _openContentManage(
-    BuildContext context,
-    TupicChannel channel,
-  ) async {
-    if (channel.isKidsChannel) {
-      final passed = await showParentalGateDialog(context);
-      if (!passed || !context.mounted) return;
-    }
-    if (!mounted) return;
-    await Navigator.of(this.context).push(
+  Future<void> _openContentManage(TupicChannel channel) async {
+    await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => ContentManagePage(channelId: channel.id),
       ),
     );
     if (!mounted) return;
-    await ContentScope.of(this.context).loadChannel(widget.channelId);
+    await ContentScope.of(context).loadChannel(widget.channelId);
   }
 
-  Future<void> _openAddContent(
-    BuildContext context,
-    TupicChannel channel,
-  ) async {
-    if (channel.isKidsChannel) {
-      final passed = await showParentalGateDialog(context);
-      if (!passed || !mounted) return;
-    }
-    if (!mounted) return;
-    await Navigator.of(this.context).push(
+  Future<void> _openAddContent(TupicChannel channel) async {
+    await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => AddContentPage(channelId: channel.id),
       ),
     );
     if (!mounted) return;
-    await ContentScope.of(this.context).loadChannel(widget.channelId);
+    await ContentScope.of(context).loadChannel(widget.channelId);
+  }
+
+  String _playOrderLabel(AppLocalizations l10n, PlayOrder order) {
+    return switch (order) {
+      PlayOrder.titleAsc => l10n.playOrderTitleAsc,
+      PlayOrder.titleDesc => l10n.playOrderTitleDesc,
+      PlayOrder.newestAdded => l10n.playOrderNewestAdded,
+      PlayOrder.oldestAdded => l10n.playOrderOldestAdded,
+      PlayOrder.shuffle => l10n.playOrderShuffle,
+    };
+  }
+
+  Future<void> _pickPlayOrder(TupicChannel channel) async {
+    final l10n = AppLocalizations.of(context);
+    final selected = await showModalBottomSheet<PlayOrder>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
+                child: Text(
+                  l10n.playOrderLabel,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              for (final order in PlayOrder.values)
+                ListTile(
+                  title: Text(_playOrderLabel(l10n, order)),
+                  trailing: channel.playOrder == order
+                      ? const Icon(
+                          Icons.check_rounded,
+                          color: TupicColors.accentViolet,
+                        )
+                      : null,
+                  onTap: () => Navigator.of(sheetContext).pop(order),
+                ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
+    if (selected == null || selected == channel.playOrder || !mounted) return;
+    await ChannelsScope.of(context).updatePlayOrder(
+      id: channel.id,
+      playOrder: selected,
+    );
   }
 
   IconData _sourceIcon(ContentSourceType type) {
@@ -124,9 +155,7 @@ class _ChannelDetailPageState extends State<ChannelDetailPage> {
         }
 
         final accent = Color(channel.accentColor.value);
-        final playOrderLabel = channel.playOrder == PlayOrder.shuffle
-            ? l10n.playOrderShuffle
-            : l10n.playOrderSequential;
+        final playOrderLabel = _playOrderLabel(l10n, channel.playOrder);
         final activeCount = contentController.activeCountFor(channel.id);
         final maxVideos = PlanLimits.maxVideosPerChannel(
           premium: PlanLimits.isPremium,
@@ -148,9 +177,9 @@ class _ChannelDetailPageState extends State<ChannelDetailPage> {
             ),
             actions: [
               IconButton(
-                tooltip: l10n.menuManageChannels,
+                tooltip: l10n.channelSettingsTooltip,
                 icon: const Icon(Icons.settings_outlined),
-                onPressed: () => _openChannelSettings(context, channel!),
+                onPressed: () => _openChannelSettings(channel!),
               ),
             ],
           ),
@@ -221,6 +250,11 @@ class _ChannelDetailPageState extends State<ChannelDetailPage> {
               _InfoTile(
                 label: '${l10n.playOrderLabel}: $playOrderLabel',
                 icon: Icons.queue_music_rounded,
+                trailing: const Icon(
+                  Icons.chevron_right_rounded,
+                  color: TupicColors.mutedText,
+                ),
+                onTap: () => _pickPlayOrder(channel!),
               ),
               _InfoTile(
                 label: l10n.queuePreviewCount(queue.length),
@@ -228,21 +262,28 @@ class _ChannelDetailPageState extends State<ChannelDetailPage> {
               ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
-                onPressed: () => _openAddContent(context, channel!),
+                onPressed: () => _openAddContent(channel!),
                 icon: const Icon(Icons.add_link),
                 label: Text(l10n.addContentTitle),
               ),
               const SizedBox(height: 10),
               OutlinedButton.icon(
-                onPressed: () => _openContentManage(context, channel!),
+                onPressed: () => _openContentManage(channel!),
                 icon: const Icon(Icons.library_add_check_outlined),
                 label: Text(l10n.manageContentTitle),
               ),
               const SizedBox(height: 10),
               OutlinedButton.icon(
-                onPressed: () => _openChannelSettings(context, channel!),
-                icon: const Icon(Icons.tune_rounded),
-                label: Text(l10n.manageThisChannel),
+                key: const Key('share_channel_button'),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => ShareChannelPage(channel: channel!),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.ios_share_rounded),
+                label: Text(l10n.shareChannelAction),
               ),
               const SizedBox(height: 10),
               ElevatedButton.icon(
@@ -323,8 +364,8 @@ class _ChannelDetailPageState extends State<ChannelDetailPage> {
                 ...videos.take(8).map((video) {
                   return _InfoTile(
                     label: video.isExcluded
-                        ? '${video.title} (${l10n.videoExcluded})'
-                        : video.title,
+                        ? '${video.displayTitle} (${l10n.videoExcluded})'
+                        : video.displayTitle,
                     icon: Icons.play_circle_outline,
                     onTap: video.isExcluded
                         ? null
@@ -362,12 +403,14 @@ class _InfoTile extends StatelessWidget {
     required this.label,
     required this.icon,
     this.subtitle,
+    this.trailing,
     this.onTap,
   });
 
   final String label;
   final IconData icon;
   final String? subtitle;
+  final Widget? trailing;
   final VoidCallback? onTap;
 
   @override
@@ -415,6 +458,7 @@ class _InfoTile extends StatelessWidget {
                     ],
                   ),
                 ),
+                ?trailing,
               ],
             ),
           ),

@@ -33,7 +33,237 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menuManageChannels => 'Manage channels';
 
   @override
-  String get menuImportSharedChannel => 'Import shared channel';
+  String get menuImportSharedChannel => 'Explore channels';
+
+  @override
+  String get exploreChannelsTitle => 'Explore channels';
+
+  @override
+  String get exploreBannerTitle => 'Explore channels';
+
+  @override
+  String get exploreBannerBody => 'Discover channels made by other people.';
+
+  @override
+  String get exploreBannerCta => 'Browse channels';
+
+  @override
+  String get homeExploreViewAll => 'See all';
+
+  @override
+  String get homeExploreSearchEntry => 'Search channels or content';
+
+  @override
+  String get homeExploreCategoryPopular => 'Popular';
+
+  @override
+  String get homeExploreCategoryLatest => 'Latest';
+
+  @override
+  String get exploreSearchHint => 'What channel are you looking for?';
+
+  @override
+  String get exploreSearchPrefixHint =>
+      'Prefix search on channel title (case-sensitive).';
+
+  @override
+  String get exploreSearchComingSoon => 'Search is coming soon.';
+
+  @override
+  String get exploreCategoryComingSoon => 'Category filters are coming soon.';
+
+  @override
+  String get exploreRecommendedSection => 'Recommended channels';
+
+  @override
+  String get exploreLatestSection => 'Latest channels';
+
+  @override
+  String get exploreEmptyTitle => 'No shared channels yet.';
+
+  @override
+  String get exploreEmptyBody => 'Be the first to share a channel!';
+
+  @override
+  String get exploreLoadFailedTitle => 'Could not load shared channels.';
+
+  @override
+  String get exploreLoadFailedBody => 'Check your connection and try again.';
+
+  @override
+  String get exploreLoadMore => 'Load more';
+
+  @override
+  String get exploreShareMyChannel => 'Share my channel';
+
+  @override
+  String get exploreShareComingSoon => 'Channel sharing is on the way.';
+
+  @override
+  String get exploreNoLocalChannelsToShare =>
+      'You have no channels to share yet. Create a channel first.';
+
+  @override
+  String get sharePreviewTitle => 'Shared channel';
+
+  @override
+  String get sharePreviewUnavailable => 'This shared channel is unavailable.';
+
+  @override
+  String get sharePreviewVideosSection => 'Shared videos';
+
+  @override
+  String get sharePreviewAddChannel => 'Add channel';
+
+  @override
+  String get sharePreviewAddVideos => 'Add videos to my channel';
+
+  @override
+  String shareVersionLabel(int version) {
+    return 'v$version';
+  }
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get exploreCategoryAll => 'All';
+
+  @override
+  String get exploreCategoryKids => 'Kids';
+
+  @override
+  String get exploreCategoryEducation => 'Education';
+
+  @override
+  String get exploreCategoryMusic => 'Music';
+
+  @override
+  String get exploreCategoryEntertainment => 'Entertainment';
+
+  @override
+  String get exploreCategoryGames => 'Games';
+
+  @override
+  String get exploreCategorySports => 'Sports';
+
+  @override
+  String get exploreCategoryLifestyle => 'Lifestyle';
+
+  @override
+  String get exploreCategoryOther => 'Other';
+
+  @override
+  String get accountNicknameSuggestGoogle =>
+      'We suggested your Google name. You can edit it to any public nickname you prefer.';
+
+  @override
+  String get shareChannelTitle => 'Share channel';
+
+  @override
+  String get shareChannelAction => 'Share channel';
+
+  @override
+  String get shareAsNewVersionTitle => 'Share as new version';
+
+  @override
+  String get shareAsNewVersionAction => 'Share as new version';
+
+  @override
+  String shareNewVersionHint(int version, int next) {
+    return 'Existing v$version stays available, and the current channel will be shared as v$next.';
+  }
+
+  @override
+  String get shareConfirmNewVersionCheckbox =>
+      'I confirm sharing as a new version';
+
+  @override
+  String get shareConfirmNewVersionRequired =>
+      'Check the box to confirm sharing a new version.';
+
+  @override
+  String get shareCategoryLabel => 'Category';
+
+  @override
+  String get shareDescriptionLabel => 'Description (optional)';
+
+  @override
+  String get shareDescriptionHint => 'Add a short description for this channel';
+
+  @override
+  String sharePublicNicknameLabel(String nickname) {
+    return 'Public nickname: $nickname';
+  }
+
+  @override
+  String get shareNeedSignIn => 'Sign in to share a channel.';
+
+  @override
+  String get shareNeedNickname => 'Set a public nickname before sharing.';
+
+  @override
+  String get shareNoVideos =>
+      'There are no videos to share. Add videos and try again.';
+
+  @override
+  String get shareTooManyVideos => 'This channel has too many videos to share.';
+
+  @override
+  String get shareNonShareableSource =>
+      'This channel includes content that cannot be shared publicly.';
+
+  @override
+  String get shareInvalidCategory => 'Please choose a category.';
+
+  @override
+  String get shareUnavailable =>
+      'Sharing is unavailable right now. Try again later.';
+
+  @override
+  String get sharePermissionDenied =>
+      'You do not have permission to share this channel.';
+
+  @override
+  String get sharePublishFailed =>
+      'Could not share the channel. Please try again.';
+
+  @override
+  String sharePublishSuccess(int version) {
+    return 'Channel shared as v$version.';
+  }
+
+  @override
+  String get mySharedChannelsTitle => 'My shared channels';
+
+  @override
+  String get mySharedChannelsEmpty => 'You have not shared any channels yet.';
+
+  @override
+  String get shareStatusPublished => 'Published';
+
+  @override
+  String get shareStatusCancelled => 'Cancelled';
+
+  @override
+  String get shareCancelAction => 'Cancel share';
+
+  @override
+  String get shareCancelTitle => 'Cancel this version?';
+
+  @override
+  String shareCancelBody(String title, int version) {
+    return '「$title」 v$version will be hidden from discovery. Channels others already imported are not affected.';
+  }
+
+  @override
+  String get shareCancelConfirm => 'Cancel share';
+
+  @override
+  String get shareCancelSuccess => 'This version is no longer shared.';
+
+  @override
+  String get shareCancelFailed => 'Could not cancel sharing.';
 
   @override
   String get menuSettings => 'Settings';
@@ -195,7 +425,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountSignInUnavailable =>
-      'Google sign-in is unavailable in this build. Use the Android Firebase build.';
+      'Google sign-in is unavailable here. Use the Android or Chrome (web) Firebase build.';
+
+  @override
+  String get accountSignInPopupBlocked =>
+      'The sign-in popup was blocked. Allow popups for this site and try again.';
+
+  @override
+  String get accountSignInUnauthorizedDomain =>
+      'This web domain is not authorized in Firebase Authentication.';
 
   @override
   String get accountConsentRequired =>
@@ -207,6 +445,63 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get accountLocalDataNote =>
       'Local channels, videos, and resume data are not shown as owned by this Google account and are not uploaded automatically.';
+
+  @override
+  String get accountGoogleSectionTitle => 'Google account';
+
+  @override
+  String get accountPublicNicknameSectionTitle => 'Public nickname';
+
+  @override
+  String get accountPublicNicknameHint =>
+      'Shown on shared channels. Separate from your Google name and email.';
+
+  @override
+  String get accountPublicNicknameEmpty => 'No public nickname yet.';
+
+  @override
+  String get accountPublicNicknameLabel => 'Public nickname';
+
+  @override
+  String get accountSetNickname => 'Set nickname';
+
+  @override
+  String get accountChangeNickname => 'Change nickname';
+
+  @override
+  String get accountNicknameDialogTitle => 'Public nickname';
+
+  @override
+  String get accountNicknameSaveSuccess => 'Public nickname saved.';
+
+  @override
+  String get accountNicknameUnavailable =>
+      'Public profiles are unavailable. Enable Cloud Firestore in the Firebase Console, then try again.';
+
+  @override
+  String get accountNicknameNotSignedIn => 'Sign in to save a public nickname.';
+
+  @override
+  String get accountNicknamePermissionDenied =>
+      'You do not have permission to edit this profile.';
+
+  @override
+  String get accountNicknameSaveFailed =>
+      'Could not save the nickname. Please try again.';
+
+  @override
+  String get accountNicknameInvalidEmpty => 'Enter a nickname.';
+
+  @override
+  String get accountNicknameInvalidLength =>
+      'Nicknames must be 2–20 characters.';
+
+  @override
+  String get accountNicknameInvalidChars =>
+      'Invalid characters. Email-style names (@) are not allowed.';
+
+  @override
+  String get accountNicknameInappropriate => 'This nickname is not allowed.';
 
   @override
   String get accountUnder14Policy =>
@@ -252,6 +547,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get premiumTitle => 'Premium';
 
   @override
+  String get premiumDeveloperTestBadge => 'Premium (Developer Test)';
+
+  @override
   String get premiumBody =>
       'More channels, higher limits, and auto-sync. Billing is not enabled yet.';
 
@@ -277,6 +575,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get manageThisChannel => 'Manage channel';
 
   @override
+  String get channelSettingsTooltip => 'Channel settings';
+
+  @override
   String get channelVideosComingSoon =>
       'Adding YouTube videos will be available in the next step.';
 
@@ -284,7 +585,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get playOrderLabel => 'Playback order';
 
   @override
-  String get playOrderSequential => 'Sequential';
+  String get playOrderTitleAsc => 'A–Z';
+
+  @override
+  String get playOrderTitleDesc => 'Z–A';
+
+  @override
+  String get playOrderNewestAdded => 'Newest added';
+
+  @override
+  String get playOrderOldestAdded => 'Oldest added';
 
   @override
   String get playOrderShuffle => 'Shuffle';
@@ -314,7 +624,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get parentalGateBody =>
-      'Enter your birth year to continue to kids channel management.';
+      'Enter your birth year to switch from a kids channel to a general channel during playback.';
 
   @override
   String get parentalGateHint => 'YYYY';
@@ -330,7 +640,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get parentalGateDisclaimer =>
-      'This is a simple access check, not legal age verification.';
+      'This is a simple access check, not legal age verification. Birth year is not stored.';
 
   @override
   String get importSharedPlaceholder =>
@@ -346,10 +656,69 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addContentUrlHint => 'Paste a YouTube link';
 
   @override
+  String get openYoutubeTooltip => 'Open YouTube';
+
+  @override
+  String get openYoutubeFailed => 'Unable to open YouTube.';
+
+  @override
   String get paste => 'Paste';
 
   @override
   String get analyzeUrl => 'Analyze';
+
+  @override
+  String get confirmContent => 'Check content';
+
+  @override
+  String get addSingleVideo => 'Add video';
+
+  @override
+  String get addSelectedVideos => 'Add selected videos';
+
+  @override
+  String get checkNewVideos => 'Check for new videos';
+
+  @override
+  String get contentNothingSelected => 'Select at least one video to add.';
+
+  @override
+  String contentImportSuccess(int count) {
+    return 'Added $count video(s).';
+  }
+
+  @override
+  String contentImportPartial(int imported, int omitted) {
+    return 'Added $imported video(s). $omitted were skipped due to the limit.';
+  }
+
+  @override
+  String get contentCreatorResolveFailed =>
+      'Could not find this creator channel. Check the link.';
+
+  @override
+  String get previewSortTitleAsc => 'Title A–Z';
+
+  @override
+  String get previewSortTitleDesc => 'Title Z–A';
+
+  @override
+  String get previewSortNewest => 'Newest uploads';
+
+  @override
+  String get previewSortOldest => 'Oldest uploads';
+
+  @override
+  String get selectAllVideos => 'Select all';
+
+  @override
+  String get clearVideoSelection => 'Clear selection';
+
+  @override
+  String get loadMoreVideos => 'Load more';
+
+  @override
+  String get noNewCreatorVideos => 'No new videos to add.';
 
   @override
   String get registerContent => 'Register';
@@ -508,6 +877,30 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get contentAgeRestrictedBlocked =>
+      'Age-restricted YouTube videos cannot be added.';
+
+  @override
+  String get contentVideoVerificationFailed =>
+      'Unable to verify this video. Please try again later.';
+
+  @override
+  String get contentProxyConnectionFailed =>
+      'Unable to reach the video verification server. Please try again later.';
+
+  @override
+  String get contentProxyQuotaExceeded =>
+      'The video verification request limit has been reached.';
+
+  @override
+  String get contentProxyVerifyFailed => 'Unable to verify this video.';
+
+  @override
+  String playlistAgeRestrictedExcluded(int count) {
+    return 'Excluded $count age-restricted videos.';
+  }
+
+  @override
   String get localServerRequired =>
       'Local YouTube server required. Run npm start in the server folder.';
 
@@ -567,6 +960,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get restoreVideo => 'Restore to playback';
+
+  @override
+  String get editVideoTitle => 'Edit title';
+
+  @override
+  String get editVideoTitleTitle => 'Edit video title';
+
+  @override
+  String get editVideoTitleLabel => 'Display title';
+
+  @override
+  String get restoreOriginalTitle => 'Restore original title';
+
+  @override
+  String originalVideoTitleHint(String title) {
+    return 'Original: $title';
+  }
 
   @override
   String get videoExcluded => 'Excluded';

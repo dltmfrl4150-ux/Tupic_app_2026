@@ -50,6 +50,21 @@ class HttpYoutubePlaylistProvider
   Future<VideoValidationResult> validateVideoIds(List<String> youtubeVideoIds) {
     return _client.validateVideos(youtubeVideoIds);
   }
+
+  @override
+  Future<ResolvedYoutubeChannel> resolveChannel({
+    String? channelId,
+    String? handle,
+    String? username,
+    String? customName,
+  }) {
+    return _client.resolveChannel(
+      channelId: channelId,
+      handle: handle,
+      username: username,
+      customName: customName,
+    );
+  }
 }
 
 /// Keeps stub available when proxy is disabled (release / tests without network).

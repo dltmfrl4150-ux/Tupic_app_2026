@@ -135,11 +135,21 @@ class ContentController extends ChangeNotifier {
     final ContentSource source;
     switch (parsed) {
       case YoutubeParsedVideo(:final videoId, :final originalUrl):
+        final meta = await _assertSingleVideoAllowed(channelId, videoId);
+        final originalTitle = _cleanOptionalTitle(meta?.title);
+        final customTitle = _resolveCustomTitle(
+          displayName: displayName,
+          videoId: videoId,
+          originalTitle: originalTitle,
+        );
         source = await _contentRepository.addVideoSource(
           tupicChannelId: channelId,
           originalUrl: originalUrl,
           youtubeVideoId: videoId,
           displayName: displayName,
+          originalTitle: originalTitle,
+          customTitle: customTitle,
+          thumbnailUrl: meta?.thumbnailUrl,
         );
       case YoutubeParsedPlaylist(:final playlistId, :final originalUrl):
         source = await _contentRepository.addPlaylistSource(
@@ -213,6 +223,19 @@ class ContentController extends ChangeNotifier {
       tupicChannelId: channelId,
       youtubeVideoId: youtubeVideoId,
       excluded: excluded,
+    );
+    await loadChannel(channelId);
+  }
+
+  Future<void> updateVideoCustomTitle({
+    required String channelId,
+    required String youtubeVideoId,
+    String? customTitle,
+  }) async {
+    await _contentRepository.updateVideoCustomTitle(
+      tupicChannelId: channelId,
+      youtubeVideoId: youtubeVideoId,
+      customTitle: customTitle,
     );
     await loadChannel(channelId);
   }
@@ -293,6 +316,7 @@ class ContentController extends ChangeNotifier {
     await loadChannel(channelId);
 
     try {
+      final isKidsChannel = await _isKidsChannel(channelId);
       final existingLinked = videosFor(channelId)
           .where((v) => v.sourceIds.contains(sourceId))
           .toList(growable: false);
@@ -329,37 +353,63 @@ class ContentController extends ChangeNotifier {
         throw VideoLimitExceededException(max);
       }
 
-      final playableIds = {
-        for (final item in remote.videos) item.youtubeVideoId,
+      final ageRestrictedIdSet = <String>{
+        ...remote.ageRestrictedIds,
+        for (final item in remote.ageRestrictedVideos) item.youtubeVideoId,
+      };
+
+      // Kids: allowed only. General: allowed + age-restricted metadata.
+      final importItems = <PlaylistVideoItem>[
+        ...remote.videos,
+        if (!isKidsChannel) ...remote.ageRestrictedVideos,
+      ];
+
+      final playableOrAcceptedIds = {
+        for (final item in importItems) item.youtubeVideoId,
       };
       final unplayableIds = <String>{
         ...remote.excludedVideoIds,
         ...localPlaceholderIds,
       };
+      // General channels may keep age-restricted rows; do not prune them.
+      if (!isKidsChannel) {
+        unplayableIds.removeAll(ageRestrictedIdSet);
+      }
 
-      // Re-validate existing linked videos not confirmed playable in this fetch.
+      // Re-validate existing linked videos not confirmed in this fetch.
       final needsValidation = existingLinked
           .map((v) => v.youtubeVideoId)
           .where(
-            (id) => !playableIds.contains(id) && !unplayableIds.contains(id),
+            (id) =>
+                !playableOrAcceptedIds.contains(id) &&
+                !unplayableIds.contains(id),
           )
           .toList(growable: false);
       var extraPrivate = 0;
       var extraNotEmbeddable = 0;
       var extraMissing = 0;
+      var extraAgeRestricted = 0;
+      var extraVerificationFailed = 0;
       if (needsValidation.isNotEmpty) {
         final validation = await playlistFetcher.validateVideoIds(
           needsValidation,
         );
         unplayableIds.addAll(validation.unplayableIds);
+        if (!isKidsChannel) {
+          unplayableIds.removeAll(validation.ageRestrictedIds);
+        }
         extraPrivate = validation.excludedPrivateDeleted;
         extraNotEmbeddable = validation.excludedNotEmbeddable;
         extraMissing = validation.excludedMissing;
+        extraAgeRestricted = isKidsChannel
+            ? validation.excludedAgeRestricted
+            : 0;
+        extraVerificationFailed = validation.excludedVerificationFailed;
       }
 
       final report = await _contentRepository.importPlaylistVideos(
         sourceId: sourceId,
-        items: remote.videos,
+        items: importItems,
         truncatedByLimit: remote.truncatedByLimit || remaining < max,
         hasMoreOnYoutube: remote.hasMore,
         skippedInvalidCount: remote.skippedInvalid,
@@ -368,6 +418,11 @@ class ContentController extends ChangeNotifier {
         excludedNotEmbeddable:
             remote.excludedNotEmbeddable + extraNotEmbeddable,
         excludedMissing: remote.excludedMissing + extraMissing,
+        excludedAgeRestricted: isKidsChannel
+            ? remote.excludedAgeRestricted + extraAgeRestricted
+            : 0,
+        excludedVerificationFailed:
+            remote.excludedVerificationFailed + extraVerificationFailed,
         unplayableVideoIds: unplayableIds,
       );
       await loadChannel(channelId);
@@ -391,6 +446,284 @@ class ContentController extends ChangeNotifier {
       _fetchingSourceIds.remove(sourceId);
       notifyListeners();
     }
+  }
+
+  Future<bool> _isKidsChannel(String channelId) async {
+    final channel = await _channelRepository.getChannel(channelId);
+    // Missing channel should not silently allow restricted content.
+    return channel?.isKidsChannel ?? true;
+  }
+
+  /// Preview a single video (validate only — does not save).
+  Future<PlaylistVideoItem> previewSingleVideo({
+    required String channelId,
+    required String youtubeVideoId,
+  }) async {
+    if (!DevApiConfig.isPlaylistFetchAvailable) {
+      throw const VideoVerificationFailedException();
+    }
+    final isKidsChannel = await _isKidsChannel(channelId);
+    final validation = await playlistFetcher.validateVideoIds([youtubeVideoId]);
+    if (validation.ageRestrictedIds.contains(youtubeVideoId)) {
+      if (isKidsChannel) {
+        throw AgeRestrictedVideoException(youtubeVideoId);
+      }
+      final meta = validation.metaFor(youtubeVideoId);
+      return meta ??
+          PlaylistVideoItem(
+            youtubeVideoId: youtubeVideoId,
+            title: ChannelVideo.provisionalTitleEn(youtubeVideoId),
+            position: 0,
+          );
+    }
+    if (validation.playableIds.contains(youtubeVideoId)) {
+      final meta = validation.metaFor(youtubeVideoId);
+      return meta ??
+          PlaylistVideoItem(
+            youtubeVideoId: youtubeVideoId,
+            title: ChannelVideo.provisionalTitleEn(youtubeVideoId),
+            position: 0,
+          );
+    }
+    throw VideoVerificationFailedException(youtubeVideoId);
+  }
+
+  /// Preview playlist videos without saving.
+  Future<PlaylistFetchResult> previewPlaylist({
+    required String channelId,
+    required String playlistId,
+    required int maxVideos,
+    bool forceRefresh = false,
+  }) async {
+    if (!DevApiConfig.isPlaylistFetchAvailable) {
+      throw const YoutubeApiException(
+        code: 'proxy_disabled',
+        message: 'Local YouTube proxy is unavailable.',
+      );
+    }
+    final isKidsChannel = await _isKidsChannel(channelId);
+    final remote = await playlistFetcher.fetchPlaylist(
+      playlistId: playlistId,
+      maxVideos: maxVideos,
+      forceRefresh: forceRefresh,
+    );
+    if (isKidsChannel) {
+      return remote;
+    }
+    // General: surface age-restricted rows as selectable candidates.
+    return PlaylistFetchResult(
+      playlistId: remote.playlistId,
+      videos: [...remote.videos, ...remote.ageRestrictedVideos],
+      hasMore: remote.hasMore,
+      truncatedByLimit: remote.truncatedByLimit,
+      skippedInvalid: remote.skippedInvalid,
+      excludedPrivateDeleted: remote.excludedPrivateDeleted,
+      excludedNotEmbeddable: remote.excludedNotEmbeddable,
+      excludedMissing: remote.excludedMissing,
+      excludedAgeRestricted: 0,
+      excludedVerificationFailed: remote.excludedVerificationFailed,
+      excludedVideoIds: remote.excludedVideoIds,
+      ageRestrictedVideos: remote.ageRestrictedVideos,
+      ageRestrictedIds: remote.ageRestrictedIds,
+      fromCache: remote.fromCache,
+    );
+  }
+
+  Future<ResolvedYoutubeChannel> resolveCreatorChannel({
+    String? channelId,
+    String? handle,
+    String? username,
+    String? customName,
+  }) {
+    return playlistFetcher.resolveChannel(
+      channelId: channelId,
+      handle: handle,
+      username: username,
+      customName: customName,
+    );
+  }
+
+  /// Registers a previously previewed single video (no second validate if [meta] given).
+  Future<ContentSource> addPreviewedVideo({
+    required String channelId,
+    required String originalUrl,
+    required String youtubeVideoId,
+    required PlaylistVideoItem meta,
+    String displayName = '',
+  }) async {
+    final originalTitle = _cleanOptionalTitle(meta.title);
+    final customTitle = _resolveCustomTitle(
+      displayName: displayName,
+      videoId: youtubeVideoId,
+      originalTitle: originalTitle,
+    );
+    final source = await _contentRepository.addVideoSource(
+      tupicChannelId: channelId,
+      originalUrl: originalUrl,
+      youtubeVideoId: youtubeVideoId,
+      displayName: displayName.isNotEmpty
+          ? displayName
+          : (originalTitle ?? ChannelVideo.provisionalTitle(youtubeVideoId)),
+      originalTitle: originalTitle,
+      customTitle: customTitle,
+      thumbnailUrl: meta.thumbnailUrl,
+    );
+    await loadChannel(channelId);
+    return source;
+  }
+
+  /// Creates playlist/creator source (if needed) and imports only [selected].
+  Future<PlaylistImportReport> importSelectedVideos({
+    required String channelId,
+    required ContentSourceType sourceType,
+    required String originalUrl,
+    required String displayName,
+    required List<PlaylistVideoItem> selected,
+    String? youtubePlaylistId,
+    String? youtubeChannelId,
+    String? youtubeHandle,
+    String? youtubeUsername,
+    String? youtubeCustomName,
+    String? existingSourceId,
+    CreatorImportMode importMode = CreatorImportMode.recent30,
+    bool hasMoreOnYoutube = false,
+    bool truncatedByLimit = false,
+  }) async {
+    if (selected.isEmpty) {
+      throw const YoutubeApiException(
+        code: 'nothing_selected',
+        message: 'No videos selected.',
+      );
+    }
+    final isKidsChannel = await _isKidsChannel(channelId);
+    var items = List<PlaylistVideoItem>.from(selected);
+    if (isKidsChannel) {
+      final ids = items.map((e) => e.youtubeVideoId).toList();
+      final validation = await playlistFetcher.validateVideoIds(ids);
+      final blocked = validation.ageRestrictedIds.toSet();
+      items = items
+          .where((e) => !blocked.contains(e.youtubeVideoId))
+          .toList(growable: false);
+      if (items.isEmpty) {
+        throw AgeRestrictedVideoException(ids.first);
+      }
+    }
+
+    late final ContentSource source;
+    if (existingSourceId != null) {
+      final all = await _contentRepository.getSources(tupicChannelId: channelId);
+      ContentSource? found;
+      for (final s in all) {
+        if (s.id == existingSourceId) {
+          found = s;
+          break;
+        }
+      }
+      if (found == null) throw ContentSourceNotFoundException(existingSourceId);
+      source = found;
+    } else if (sourceType == ContentSourceType.playlist) {
+      source = await _contentRepository.addPlaylistSource(
+        tupicChannelId: channelId,
+        originalUrl: originalUrl,
+        youtubePlaylistId: youtubePlaylistId!,
+        displayName: displayName,
+      );
+    } else if (sourceType == ContentSourceType.creator) {
+      source = await _contentRepository.addCreatorSource(
+        tupicChannelId: channelId,
+        originalUrl: originalUrl,
+        displayName: displayName,
+        youtubeChannelId: youtubeChannelId,
+        youtubeHandle: youtubeHandle,
+        youtubeUsername: youtubeUsername,
+        youtubeCustomName: youtubeCustomName,
+        youtubePlaylistId: youtubePlaylistId,
+        importMode: importMode,
+        autoSyncEnabled: false,
+      );
+    } else {
+      throw StateError('Unsupported source type for multi import');
+    }
+
+    final report = await _contentRepository.importPlaylistVideos(
+      sourceId: source.id,
+      items: items,
+      truncatedByLimit: truncatedByLimit,
+      hasMoreOnYoutube: hasMoreOnYoutube,
+      skippedInvalidCount: 0,
+    );
+    await loadChannel(channelId);
+    return report;
+  }
+
+  /// Fetches creator uploads and returns only videos not already linked to [sourceId].
+  Future<List<PlaylistVideoItem>> previewNewCreatorVideos({
+    required String channelId,
+    required String sourceId,
+    required String uploadsPlaylistId,
+    int maxVideos = 30,
+  }) async {
+    final remote = await previewPlaylist(
+      channelId: channelId,
+      playlistId: uploadsPlaylistId,
+      maxVideos: maxVideos,
+      forceRefresh: true,
+    );
+    final existing = videosFor(channelId)
+        .where((v) => v.sourceIds.contains(sourceId))
+        .map((v) => v.youtubeVideoId)
+        .toSet();
+    return remote.videos
+        .where((v) => !existing.contains(v.youtubeVideoId))
+        .toList(growable: false);
+  }
+
+  /// Validates a single video via the local proxy before registration.
+  /// Age-restricted: blocked on kids channels only; allowed on general.
+  /// Does not mutate SharedPreferences on failure.
+  /// Returns metadata from the same videos.list response (no extra quota).
+  Future<PlaylistVideoItem?> _assertSingleVideoAllowed(
+    String channelId,
+    String youtubeVideoId,
+  ) async {
+    if (!DevApiConfig.isPlaylistFetchAvailable) {
+      throw const VideoVerificationFailedException();
+    }
+    final isKidsChannel = await _isKidsChannel(channelId);
+    final validation = await playlistFetcher.validateVideoIds([youtubeVideoId]);
+    if (validation.ageRestrictedIds.contains(youtubeVideoId)) {
+      if (isKidsChannel) {
+        throw AgeRestrictedVideoException(youtubeVideoId);
+      }
+      // General channel: age-restricted may still fail in the embedded player.
+      return validation.metaFor(youtubeVideoId);
+    }
+    if (validation.playableIds.contains(youtubeVideoId)) {
+      return validation.metaFor(youtubeVideoId);
+    }
+    // Private, deleted, non-embeddable, missing, or incomplete — not labeled
+    // as age-restricted.
+    throw VideoVerificationFailedException(youtubeVideoId);
+  }
+
+  static String? _cleanOptionalTitle(String? value) {
+    if (value == null) return null;
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return null;
+    return trimmed;
+  }
+
+  /// Treat empty / provisional / same-as-original display names as no custom.
+  static String? _resolveCustomTitle({
+    required String displayName,
+    required String videoId,
+    String? originalTitle,
+  }) {
+    final trimmed = displayName.trim();
+    if (trimmed.isEmpty) return null;
+    if (ChannelVideo.isProvisionalTitleText(trimmed, videoId)) return null;
+    if (originalTitle != null && trimmed == originalTitle.trim()) return null;
+    return trimmed;
   }
 
   Future<void> _markFetchFailed(

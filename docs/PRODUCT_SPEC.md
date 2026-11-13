@@ -40,7 +40,8 @@ Avoid navy/charcoal as the main background, excessive neon glow, copyrighted cha
 
 - Menu entry is always at the **top-right**.
 - Menu opens as a **right-side drawer** (no fixed left sidebar).
-- Drawer items: channel list (expandable, default open), create channel, manage channels, import shared channel, settings, my account.
+- Drawer items: channel list (expandable, default open), create channel, import shared channel (placeholder until STEP 6B), settings, my account.
+- Per-channel management hub is Channel Detail (add content, manage content, settings via AppBar).
 - Premium messaging may appear as a secondary drawer note without covering primary items.
 
 ## Home screen structure
@@ -55,8 +56,8 @@ Avoid navy/charcoal as the main background, excessive neon glow, copyrighted cha
 
 - Name input
 - Kids channel checkbox (default **checked** → `isKidsChannel = true`)
-- Kids channels use a parental gate (4-digit birth year; age ≥ 18 passes). This is not strong identity verification.
-- General channels skip the parental gate.
+- Parental gate (4-digit birth year; age ≥ 18): only when switching from a **playing kids channel** to a **general channel**. Not used for management screens or starting playback from home/detail.
+- Birth year is never persisted.
 
 ## Playback (future)
 

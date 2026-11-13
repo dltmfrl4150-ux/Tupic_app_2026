@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/theme/tupic_colors.dart';
+import '../../../core/config/dev_api_config.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/models/channel_video.dart';
 import '../../../shared/models/content_enums.dart';
@@ -75,7 +76,7 @@ class _ContentManagePageState extends State<ContentManagePage> {
       builder: (context) {
         return AlertDialog(
           title: Text(l10n.deleteVideoTitle),
-          content: Text(l10n.deleteVideoBody(video.title)),
+          content: Text(l10n.deleteVideoBody(video.displayTitle)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
@@ -93,6 +94,78 @@ class _ContentManagePageState extends State<ContentManagePage> {
     await ContentScope.of(context).deleteVideo(
       channelId: widget.channelId,
       youtubeVideoId: video.youtubeVideoId,
+    );
+  }
+
+  Future<void> _editVideoTitle(ChannelVideo video) async {
+    final l10n = AppLocalizations.of(context);
+    final controller = TextEditingController(text: video.displayTitle);
+    final result = await showDialog<_TitleEditResult>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(l10n.editVideoTitleTitle),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: controller,
+                autofocus: true,
+                maxLines: 2,
+                decoration: InputDecoration(
+                  labelText: l10n.editVideoTitleLabel,
+                  hintText: video.originalTitle ??
+                      ChannelVideo.provisionalTitle(video.youtubeVideoId),
+                ),
+              ),
+              if (video.originalTitle != null &&
+                  video.originalTitle!.trim().isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(
+                  l10n.originalVideoTitleHint(video.originalTitle!),
+                  style: const TextStyle(
+                    color: TupicColors.mutedText,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ],
+          ),
+          actions: [
+            if (video.hasCustomTitle ||
+                (video.originalTitle != null &&
+                    video.originalTitle!.trim().isNotEmpty))
+              TextButton(
+                onPressed: () =>
+                    Navigator.pop(context, const _TitleEditResult.restore()),
+                child: Text(l10n.restoreOriginalTitle),
+              ),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(l10n.cancel),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(
+                context,
+                _TitleEditResult.save(controller.text),
+              ),
+              child: Text(l10n.save),
+            ),
+          ],
+        );
+      },
+    );
+    controller.dispose();
+    if (result == null || !mounted) return;
+
+    final customTitle = result.restore
+        ? null
+        : (result.value?.trim().isEmpty ?? true ? null : result.value);
+    await ContentScope.of(context).updateVideoCustomTitle(
+      channelId: widget.channelId,
+      youtubeVideoId: video.youtubeVideoId,
+      customTitle: customTitle,
     );
   }
 
@@ -121,6 +194,125 @@ class _ContentManagePageState extends State<ContentManagePage> {
     };
   }
 
+  Future<void> _checkNewCreatorVideos(ContentSource source) async {
+    final l10n = AppLocalizations.of(context);
+    final content = ContentScope.of(context);
+    try {
+      var uploadsId = source.youtubePlaylistId;
+      if (uploadsId == null || uploadsId.isEmpty) {
+        final resolved = await content.resolveCreatorChannel(
+          channelId: source.youtubeChannelId,
+          handle: source.youtubeHandle,
+          username: source.youtubeUsername,
+          customName: source.youtubeCustomName,
+        );
+        uploadsId = resolved.uploadsPlaylistId;
+      }
+      final news = await content.previewNewCreatorVideos(
+        channelId: widget.channelId,
+        sourceId: source.id,
+        uploadsPlaylistId: uploadsId,
+        maxVideos: 30,
+      );
+      if (!mounted) return;
+      if (news.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.noNewCreatorVideos)),
+        );
+        return;
+      }
+      final selected = await showDialog<Set<String>>(
+        context: context,
+        builder: (context) {
+          final picks = news.map((v) => v.youtubeVideoId).toSet();
+          return StatefulBuilder(
+            builder: (context, setLocal) {
+              return AlertDialog(
+                title: Text(l10n.checkNewVideos),
+                content: SizedBox(
+                  width: double.maxFinite,
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      for (final video in news)
+                        CheckboxListTile(
+                          value: picks.contains(video.youtubeVideoId),
+                          title: Text(
+                            video.title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          onChanged: (value) {
+                            setLocal(() {
+                              if (value == true) {
+                                picks.add(video.youtubeVideoId);
+                              } else {
+                                picks.remove(video.youtubeVideoId);
+                              }
+                            });
+                          },
+                        ),
+                    ],
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text(l10n.cancel),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(context, picks),
+                    child: Text(l10n.addSelectedVideos),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+      if (selected == null || selected.isEmpty || !mounted) return;
+      final chosen =
+          news.where((v) => selected.contains(v.youtubeVideoId)).toList();
+      final report = await content.importSelectedVideos(
+        channelId: widget.channelId,
+        sourceType: ContentSourceType.creator,
+        originalUrl: source.originalUrl,
+        displayName: source.displayName,
+        selected: chosen,
+        existingSourceId: source.id,
+        youtubePlaylistId: uploadsId,
+        youtubeChannelId: source.youtubeChannelId,
+        youtubeHandle: source.youtubeHandle,
+        youtubeUsername: source.youtubeUsername,
+        youtubeCustomName: source.youtubeCustomName,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.contentImportSuccess(report.importedCount)),
+        ),
+      );
+    } on YoutubeApiException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            error.isConnectionFailed
+                ? l10n.localServerRequired
+                : error.isQuotaExceeded
+                ? l10n.quotaExceededMessage
+                : l10n.contentCreatorResolveFailed,
+          ),
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.errorTitle)),
+      );
+    }
+  }
+
   Future<void> _fetchPlaylist(ContentSource source, {bool refresh = false}) async {
     final l10n = AppLocalizations.of(context);
     final content = ContentScope.of(context);
@@ -134,11 +326,19 @@ class _ContentManagePageState extends State<ContentManagePage> {
       final summary = StringBuffer(
         l10n.playlistFetchReport(
           report.importedCount,
-          report.excludedPrivateDeleted + report.excludedMissing,
+          report.excludedPrivateDeleted +
+              report.excludedMissing +
+              report.excludedVerificationFailed,
           report.excludedNotEmbeddable,
           report.duplicateCount,
         ),
       );
+      if (report.excludedAgeRestricted > 0) {
+        summary.write('\n');
+        summary.write(
+          l10n.playlistAgeRestrictedExcluded(report.excludedAgeRestricted),
+        );
+      }
       if (report.prunedUnplayableCount > 0) {
         summary.write('\n');
         summary.write(
@@ -239,6 +439,8 @@ class _ContentManagePageState extends State<ContentManagePage> {
                     final fetching = content.isFetchingSource(source.id);
                     final isPlaylist =
                         source.sourceType == ContentSourceType.playlist;
+                    final isCreator =
+                        source.sourceType == ContentSourceType.creator;
                     final canFetch = isPlaylist &&
                         source.youtubePlaylistId != null &&
                         !fetching;
@@ -248,111 +450,177 @@ class _ContentManagePageState extends State<ContentManagePage> {
                             source.importStatus ==
                                 ImportStatus.partiallyFetched ||
                             source.importStatus == ImportStatus.fetched);
+                    final linkedCount = content
+                        .videosFor(widget.channelId)
+                        .where((v) => v.sourceIds.contains(source.id))
+                        .length;
+                    final statusLine =
+                        '${_sourceTypeLabel(l10n, source.sourceType)} · ${_statusLabel(l10n, source, fetching: fetching)}';
+                    final isVideo =
+                        source.sourceType == ContentSourceType.video;
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: Material(
                         color: TupicColors.card,
                         borderRadius: BorderRadius.circular(12),
-                        child: ListTile(
-                          shape: RoundedRectangleBorder(
+                        child: Ink(
+                          decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
-                            side: const BorderSide(
+                            border: Border.all(
                               color: TupicColors.borderSubtle,
                             ),
                           ),
-                          title: Text(
-                            source.displayName,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${_sourceTypeLabel(l10n, source.sourceType)} · ${_statusLabel(l10n, source, fetching: fetching)}',
-                              ),
-                              if (source.lastFetchedAt != null)
-                                Text(
-                                  l10n.lastFetchedAtLabel(
-                                    source.lastFetchedAt!
-                                        .toLocal()
-                                        .toString()
-                                        .split('.')
-                                        .first,
-                                  ),
-                                  style: const TextStyle(
-                                    color: TupicColors.mutedText,
-                                    fontSize: 11,
-                                  ),
-                                ),
-                              if (source.lastErrorMessage != null &&
-                                  source.lastErrorMessage!.isNotEmpty)
-                                Text(
-                                  source.lastErrorMessage!,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    color: TupicColors.error,
-                                    fontSize: 11,
-                                  ),
-                                ),
-                            ],
-                          ),
-                          isThreeLine: true,
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if (canFetch && showRetry)
-                                IconButton(
-                                  tooltip: source.importStatus ==
-                                              ImportStatus.failed ||
-                                          source.importStatus ==
-                                              ImportStatus.partiallyFetched ||
-                                          source.importStatus ==
-                                              ImportStatus.fetched
-                                      ? l10n.retryFetchPlaylist
-                                      : l10n.fetchPlaylistVideos,
-                                  icon: fetching
-                                      ? const SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                          ),
-                                        )
-                                      : Icon(
-                                          source.importStatus ==
-                                                  ImportStatus.pendingFetch
-                                              ? Icons.cloud_download_outlined
-                                              : Icons.refresh,
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(
+                              14,
+                              isVideo ? 10 : 12,
+                              4,
+                              isVideo ? 10 : 12,
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        source.displayName,
+                                        maxLines: isVideo ? 2 : 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
                                         ),
-                                  onPressed: fetching
-                                      ? null
-                                      : () => _fetchPlaylist(
-                                            source,
-                                            refresh: source.importStatus ==
-                                                    ImportStatus.fetched ||
-                                                source.importStatus ==
-                                                    ImportStatus
-                                                        .partiallyFetched ||
-                                                source.importStatus ==
-                                                    ImportStatus.failed,
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        statusLine,
+                                        style: const TextStyle(
+                                          color: TupicColors.mutedText,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                      if (isCreator) ...[
+                                        if (source.youtubeChannelId != null)
+                                          Text(
+                                            source.youtubeChannelId!,
+                                            style: const TextStyle(
+                                              color: TupicColors.mutedText,
+                                              fontSize: 11,
+                                            ),
                                           ),
+                                        Text(
+                                          l10n.playlistFetchedCount(
+                                            linkedCount,
+                                          ),
+                                          style: const TextStyle(
+                                            color: TupicColors.mutedText,
+                                            fontSize: 11,
+                                          ),
+                                        ),
+                                      ],
+                                      if (!isVideo &&
+                                          source.lastFetchedAt != null)
+                                        Text(
+                                          l10n.lastFetchedAtLabel(
+                                            source.lastFetchedAt!
+                                                .toLocal()
+                                                .toString()
+                                                .split('.')
+                                                .first,
+                                          ),
+                                          style: const TextStyle(
+                                            color: TupicColors.mutedText,
+                                            fontSize: 11,
+                                          ),
+                                        ),
+                                      if (!isVideo &&
+                                          source.lastErrorMessage != null &&
+                                          source
+                                              .lastErrorMessage!.isNotEmpty)
+                                        Text(
+                                          source.lastErrorMessage!,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            color: TupicColors.error,
+                                            fontSize: 11,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
                                 ),
-                              IconButton(
-                                tooltip: l10n.delete,
-                                icon: const Icon(Icons.delete_outline),
-                                onPressed: () => _confirmDeleteSource(source),
-                              ),
-                            ],
+                                if (isCreator)
+                                  IconButton(
+                                    tooltip: l10n.checkNewVideos,
+                                    icon: const Icon(
+                                      Icons.new_releases_outlined,
+                                    ),
+                                    onPressed: fetching
+                                        ? null
+                                        : () =>
+                                            _checkNewCreatorVideos(source),
+                                  ),
+                                if (canFetch && showRetry)
+                                  IconButton(
+                                    tooltip: source.importStatus ==
+                                                ImportStatus.failed ||
+                                            source.importStatus ==
+                                                ImportStatus
+                                                    .partiallyFetched ||
+                                            source.importStatus ==
+                                                ImportStatus.fetched
+                                        ? l10n.retryFetchPlaylist
+                                        : l10n.fetchPlaylistVideos,
+                                    icon: fetching
+                                        ? const SizedBox(
+                                            width: 20,
+                                            height: 20,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                            ),
+                                          )
+                                        : Icon(
+                                            source.importStatus ==
+                                                    ImportStatus.pendingFetch
+                                                ? Icons
+                                                    .cloud_download_outlined
+                                                : Icons.refresh,
+                                          ),
+                                    onPressed: fetching
+                                        ? null
+                                        : () => _fetchPlaylist(
+                                              source,
+                                              refresh: source.importStatus ==
+                                                      ImportStatus.fetched ||
+                                                  source.importStatus ==
+                                                      ImportStatus
+                                                          .partiallyFetched ||
+                                                  source.importStatus ==
+                                                      ImportStatus.failed,
+                                            ),
+                                  ),
+                                IconButton(
+                                  tooltip: l10n.delete,
+                                  icon: const Icon(Icons.delete_outline),
+                                  onPressed: () =>
+                                      _confirmDeleteSource(source),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     );
                   }),
-                if (sources.any(
-                  (s) => s.sourceType == ContentSourceType.creator,
-                ))
+                if (!DevApiConfig.isPlaylistFetchAvailable &&
+                    sources.any(
+                      (s) =>
+                          s.sourceType == ContentSourceType.creator ||
+                          s.sourceType == ContentSourceType.playlist,
+                    ))
                   Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: Text(
@@ -409,7 +677,7 @@ class _ContentManagePageState extends State<ContentManagePage> {
                     ),
                     leading: _Thumb(url: video.thumbnailUrl),
                     title: Text(
-                      video.title,
+                      video.displayTitle,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -429,6 +697,8 @@ class _ContentManagePageState extends State<ContentManagePage> {
                     trailing: PopupMenuButton<String>(
                       onSelected: (value) async {
                         switch (value) {
+                          case 'edit_title':
+                            await _editVideoTitle(video);
                           case 'exclude':
                             await content.setExcluded(
                               channelId: widget.channelId,
@@ -440,6 +710,10 @@ class _ContentManagePageState extends State<ContentManagePage> {
                         }
                       },
                       itemBuilder: (context) => [
+                        PopupMenuItem(
+                          value: 'edit_title',
+                          child: Text(l10n.editVideoTitle),
+                        ),
                         PopupMenuItem(
                           value: 'exclude',
                           child: Text(
@@ -462,6 +736,16 @@ class _ContentManagePageState extends State<ContentManagePage> {
       ),
     );
   }
+}
+
+class _TitleEditResult {
+  const _TitleEditResult.save(this.value) : restore = false;
+  const _TitleEditResult.restore()
+      : value = null,
+        restore = true;
+
+  final String? value;
+  final bool restore;
 }
 
 class _EmptyBox extends StatelessWidget {

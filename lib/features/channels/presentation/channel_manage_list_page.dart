@@ -6,17 +6,13 @@ import '../../../shared/models/tupic_channel.dart';
 import 'channel_manage_page.dart';
 import 'channels_controller.dart';
 import 'create_channel_dialog.dart';
-import 'parental_gate_dialog.dart';
 
+/// Legacy multi-channel picker. Home drawer no longer links here (STEP 6A);
+/// channel settings open from [ChannelDetailPage] AppBar.
 class ChannelManageListPage extends StatelessWidget {
   const ChannelManageListPage({super.key});
 
   Future<void> _openManage(BuildContext context, TupicChannel channel) async {
-    if (channel.isKidsChannel) {
-      final passed = await showParentalGateDialog(context);
-      if (!passed || !context.mounted) return;
-    }
-    if (!context.mounted) return;
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => ChannelManagePage(channelId: channel.id),

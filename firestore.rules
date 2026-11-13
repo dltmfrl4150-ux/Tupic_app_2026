@@ -1,0 +1,218 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null && request.auth.uid != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // Mirrors client NicknameValidator trim policy: stored nickname must already
+    // be trimmed (no leading/trailing whitespace). Whitespace-only is rejected.
+    function nicknameValid() {
+      let nick = request.resource.data.nickname;
+      return nick is string
+        && nick.size() >= 2
+        && nick.size() <= 20
+        && !nick.matches('.*@.*')
+        && nick.matches('^\\S(.*\\S)?$');
+    }
+
+    function publicProfileKeysOk() {
+      return request.resource.data.keys().hasOnly(
+        ['uid', 'nickname', 'updatedAt', 'createdAt']
+      );
+    }
+
+    function publicProfileShape(userId) {
+      return publicProfileKeysOk()
+        && request.resource.data.uid == userId
+        && request.resource.data.uid == request.auth.uid
+        && nicknameValid()
+        && request.resource.data.updatedAt is timestamp
+        && request.resource.data.createdAt is timestamp;
+    }
+
+    function createdAtPreserved() {
+      return !resource.data.keys().hasAny(['createdAt'])
+        || request.resource.data.createdAt == resource.data.createdAt;
+    }
+
+    match /publicProfiles/{userId} {
+      allow read: if true;
+      allow create: if isOwner(userId) && publicProfileShape(userId);
+      allow update: if isOwner(userId)
+        && publicProfileShape(userId)
+        && resource.data.uid == userId
+        && createdAtPreserved();
+      allow delete: if false;
+    }
+
+    function shareGroupKeysOk() {
+      return request.resource.data.keys().hasOnly(
+        ['ownerUid', 'sourceChannelId', 'latestVersion', 'createdAt', 'updatedAt']
+      );
+    }
+
+    function shareGroupShape() {
+      return shareGroupKeysOk()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.sourceChannelId is string
+        && request.resource.data.sourceChannelId.size() >= 3
+        && request.resource.data.sourceChannelId.size() <= 80
+        && request.resource.data.latestVersion is int
+        && request.resource.data.latestVersion >= 1
+        && request.resource.data.latestVersion <= 10000
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.updatedAt is timestamp;
+    }
+
+    match /shareGroups/{groupId} {
+      // First publish does tx.get() on a not-yet-existing group doc.
+      // resource.data on a missing doc fails rules evaluation → permission-denied.
+      // Only allow missing/own docs whose id is prefixed with the caller uid.
+      allow read: if isSignedIn()
+        && groupId.matches('^' + request.auth.uid + '__.*')
+        && (resource == null || resource.data.ownerUid == request.auth.uid);
+
+      allow create: if isSignedIn()
+        && shareGroupShape()
+        && request.resource.data.latestVersion == 1
+        && groupId == request.auth.uid + '__' + request.resource.data.sourceChannelId;
+
+      allow update: if isSignedIn()
+        && shareGroupShape()
+        && resource.data.ownerUid == request.auth.uid
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && request.resource.data.sourceChannelId == resource.data.sourceChannelId
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.latestVersion == resource.data.latestVersion + 1;
+
+      allow delete: if false;
+    }
+
+    function shareCategoryOk() {
+      let c = request.resource.data.category;
+      return c in [
+        'kids', 'education', 'music', 'entertainment',
+        'games', 'sports', 'lifestyle', 'other'
+      ];
+    }
+
+    function sharePostKeysCreateOk() {
+      return request.resource.data.keys().hasOnly([
+        'groupId', 'ownerUid', 'version', 'title', 'description',
+        'category', 'isKids', 'videoCount', 'snapshot', 'createdAt', 'status'
+      ]);
+    }
+
+    function sharePostKeysUpdateOk() {
+      return request.resource.data.keys().hasOnly([
+        'groupId', 'ownerUid', 'version', 'title', 'description',
+        'category', 'isKids', 'videoCount', 'snapshot', 'createdAt',
+        'status', 'cancelledAt'
+      ]);
+    }
+
+    function shareSnapshotOk() {
+      let snap = request.resource.data.snapshot;
+      return snap is map
+        && snap.keys().hasOnly([
+          'channelName', 'isKidsChannel', 'playOrder',
+          'coverLabel', 'accentColor', 'videos'
+        ])
+        && snap.channelName is string
+        && snap.channelName.size() >= 1
+        && snap.channelName.size() <= 80
+        && snap.isKidsChannel is bool
+        && snap.playOrder is string
+        && snap.videos is list
+        && snap.videos.size() == request.resource.data.videoCount
+        && snap.videos.size() >= 1
+        && snap.videos.size() <= 1000;
+    }
+
+    // Use getAfter/existsAfter so the same transaction/batch that creates or
+    // bumps shareGroups is visible when validating sharePosts (client publish).
+    function shareGroupPath(groupId) {
+      return /databases/$(database)/documents/shareGroups/$(groupId);
+    }
+
+    function shareGroupAfter(groupId) {
+      return getAfter(shareGroupPath(groupId));
+    }
+
+    function sharePostCreateShape() {
+      return sharePostKeysCreateOk()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.groupId is string
+        && existsAfter(shareGroupPath(request.resource.data.groupId))
+        && request.resource.data.groupId == request.auth.uid + '__'
+          + shareGroupAfter(request.resource.data.groupId).data.sourceChannelId
+        && request.resource.data.version is int
+        && request.resource.data.version >= 1
+        && request.resource.data.title is string
+        && request.resource.data.title.size() >= 1
+        && request.resource.data.title.size() <= 80
+        && shareCategoryOk()
+        && request.resource.data.isKids is bool
+        && request.resource.data.videoCount is int
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.status == 'published'
+        && shareSnapshotOk()
+        && (!('description' in request.resource.data)
+          || (request.resource.data.description is string
+            && request.resource.data.description.size() <= 500));
+    }
+
+
+    function shareImmutableFieldsPreserved() {
+      return request.resource.data.groupId == resource.data.groupId
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && request.resource.data.version == resource.data.version
+        && request.resource.data.title == resource.data.title
+        && request.resource.data.category == resource.data.category
+        && request.resource.data.isKids == resource.data.isKids
+        && request.resource.data.videoCount == resource.data.videoCount
+        && request.resource.data.snapshot == resource.data.snapshot
+        && request.resource.data.createdAt == resource.data.createdAt
+        && (
+          !('description' in resource.data)
+            ? !('description' in request.resource.data)
+            : request.resource.data.description == resource.data.description
+        );
+    }
+
+    match /sharePosts/{postId} {
+      // Owner can always read own posts; others only published (for later explore).
+      allow read: if resource.data.status == 'published'
+        || (isSignedIn() && resource.data.ownerUid == request.auth.uid);
+
+      // Create with group ownership in the same request (transaction/batch).
+      // version must match shareGroups.latestVersion AFTER pending writes.
+      allow create: if isSignedIn()
+        && sharePostCreateShape()
+        && shareGroupAfter(request.resource.data.groupId).data.ownerUid
+          == request.auth.uid
+        && shareGroupAfter(request.resource.data.groupId).data.latestVersion
+          == request.resource.data.version;
+
+      // Cancel only: published -> cancelled. Snapshot immutable.
+      allow update: if isSignedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && sharePostKeysUpdateOk()
+        && shareImmutableFieldsPreserved()
+        && resource.data.status == 'published'
+        && request.resource.data.status == 'cancelled'
+        && request.resource.data.cancelledAt is timestamp;
+
+      allow delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

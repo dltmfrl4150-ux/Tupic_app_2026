@@ -67,6 +67,49 @@ class LocalYoutubeApiClient {
     return PlaylistFetchResult.fromJson(body);
   }
 
+  Future<ResolvedYoutubeChannel> resolveChannel({
+    String? channelId,
+    String? handle,
+    String? username,
+    String? customName,
+  }) async {
+    if (!isConfigured) {
+      throw const YoutubeApiException(
+        code: 'proxy_disabled',
+        message:
+            'Local YouTube proxy is disabled in this build. Use a debug build with the local server running.',
+      );
+    }
+    final query = <String, String>{
+      if (channelId != null && channelId.isNotEmpty) 'channelId': channelId,
+      if (handle != null && handle.isNotEmpty) 'handle': handle,
+      if (username != null && username.isNotEmpty) 'username': username,
+      if (customName != null && customName.isNotEmpty) 'customName': customName,
+    };
+    if (query.isEmpty) {
+      throw const YoutubeApiException(
+        code: 'invalid_channel',
+        message: 'Channel identifier required.',
+      );
+    }
+    final uri = Uri.parse('$baseUrl/api/youtube/channels/resolve').replace(
+      queryParameters: query,
+    );
+    final response = await _get(uri);
+    final body = _decodeBody(response);
+    if (response.statusCode >= 400) {
+      throw _exceptionFromBody(body, response.statusCode);
+    }
+    try {
+      return ResolvedYoutubeChannel.fromJson(body);
+    } catch (_) {
+      throw const YoutubeApiException(
+        code: 'invalid_response',
+        message: 'Channel resolve response was incomplete.',
+      );
+    }
+  }
+
   Future<VideoValidationResult> validateVideos(List<String> youtubeVideoIds) async {
     if (!isConfigured) {
       throw const YoutubeApiException(

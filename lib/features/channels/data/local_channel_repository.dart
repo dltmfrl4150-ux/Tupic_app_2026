@@ -105,8 +105,11 @@ class LocalChannelRepository implements ChannelRepository {
     }
 
     final existing = await getChannels();
-    if (existing.length >= freeMaxChannels) {
-      throw ChannelLimitExceededException(freeMaxChannels);
+    final maxChannels = PlanLimits.isPremium
+        ? PlanLimits.maxChannels(premium: true)
+        : freeMaxChannels;
+    if (existing.length >= maxChannels) {
+      throw ChannelLimitExceededException(maxChannels);
     }
 
     final channel = TupicChannel(
@@ -118,7 +121,7 @@ class LocalChannelRepository implements ChannelRepository {
         _accentPalette[existing.length % _accentPalette.length],
       ),
       createdAt: DateTime.now(),
-      playOrder: PlayOrder.sequential,
+      playOrder: PlayOrder.oldestAdded,
       coverLabel: isKidsChannel ? 'KIDS' : 'CH',
     );
 

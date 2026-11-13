@@ -15,6 +15,16 @@ abstract class ContentRepository {
     required String originalUrl,
     required String youtubeVideoId,
     required String displayName,
+    String? originalTitle,
+    String? customTitle,
+    String? thumbnailUrl,
+  });
+
+  /// Sets or clears the user custom title. Blank [customTitle] restores original.
+  Future<ChannelVideo> updateVideoCustomTitle({
+    required String tupicChannelId,
+    required String youtubeVideoId,
+    String? customTitle,
   });
 
   Future<ContentSource> addPlaylistSource({
@@ -32,6 +42,7 @@ abstract class ContentRepository {
     String? youtubeHandle,
     String? youtubeUsername,
     String? youtubeCustomName,
+    String? youtubePlaylistId,
     CreatorImportMode importMode = CreatorImportMode.recent30,
     CreatorSortOrder sortOrder = CreatorSortOrder.newest,
     bool autoSyncEnabled = false,
@@ -78,6 +89,8 @@ abstract class ContentRepository {
     int excludedPrivateDeleted = 0,
     int excludedNotEmbeddable = 0,
     int excludedMissing = 0,
+    int excludedAgeRestricted = 0,
+    int excludedVerificationFailed = 0,
     Set<String> unplayableVideoIds = const {},
   });
 

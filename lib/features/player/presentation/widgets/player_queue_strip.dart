@@ -75,7 +75,7 @@ class PlayerQueueStrip extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      video.title,
+                      video.displayTitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(

@@ -9,17 +9,18 @@ Legend: **완료** / **Mock** / **미구현** / **검증 필요**
 | Space hero illustration | 완료 | STEP 5A-2: 2D `SpacePatternPainter` (cell 320px, seed); no 3D banner |
 | Home responsive layout | 완료 | Mobile/tablet/web widths |
 | Right hamburger + end drawer | 완료 | Channel list expandable |
-| Menu navigation | 완료 | Detail / create / manage / placeholders |
+| Menu navigation | 완료 | Detail hub / create / import placeholder / settings |
 | My channel cards | 완료 | Local user channels |
-| Channel create / manage / delete | 완료 | Free 1-channel limit |
-| Parental gate | 완료 | Kids channel management + player unlock |
+| Channel create / manage / delete | 완료 | Free 1-channel limit; settings via detail AppBar |
+| Parental gate | 완료 | STEP 6A: kids→general playback switch only |
 | Locale ko/en | 완료 | ARB + SharedPreferences |
 | YouTube URL parser | 완료 | Video / playlist / creator / ambiguous |
 | ContentSource + ChannelVideo models | 완료 | Source ≠ playback list |
 | Local content persistence | 완료 | `tupic_content_sources_v1`, `tupic_channel_videos_v1` |
 | Add content UI | 완료 | Paste / analyze / register |
-| Individual video register | 완료 | No API metadata resolve |
-| Playlist / creator source register | 완료 | pendingFetch, no invented videos |
+| Individual video register | 완료 | STEP 5D: proxy validate before save |
+| Age-restricted video block | 완료 | STEP 5D-2: kids only; general may register |
+| Playlist / creator source register | 완료 | pendingFetch; playlist age filter via proxy |
 | Content manage (exclude/reorder/delete) | 완료 | Multi-source safe delete |
 | Playback queue builder | 완료 | Pure logic + unit tests |
 | Free video limit 100 | 완료 | Unique active IDs |
@@ -37,8 +38,10 @@ Legend: **완료** / **Mock** / **미구현** / **검증 필요**
 | Terms of Service / Privacy Policy | 완료 | STEP 5B: KO drafts + settings links; TODO business fields |
 | Consent UI + local records | 완료 | `ConsentPanel` / `ConsentFlow` for STEP 5C; no forced popup |
 | Firebase Auth + Google sign-in (Android) | 완료 | STEP 5C-2: `tupic-project`, no Firestore/Functions |
+| Firebase Auth + Google sign-in (Web) | 완료 | STEP 6W: `signInWithPopup`; same project |
 | Firebase | Auth only | Spark; no cloud channel sync |
 | Premium billing | 미구현 | Upsell only |
+| Developer Premium test (debug) | 완료 | STEP 5D-3: UID allow-list via dart-define; release off |
 | Share import / ads / AI classify | 미구현 | — |
 
 ## STEP 3B notes

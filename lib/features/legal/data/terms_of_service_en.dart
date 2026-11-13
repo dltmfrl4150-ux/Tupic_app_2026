@@ -60,7 +60,7 @@ Article 6 (Channel Creation and Content Management)
 Article 7 (Kids Channel Feature)
 1. A Kids Channel is a management label chosen by the User (for example via a checkbox) when creating a channel.
 2. The Kids Channel feature helps Users separate and manage selected videos; it does not guarantee that every video in that channel is suitable for children.
-3. Some Kids Channel management screens may include a simple parent check (for example birth-year entry). That is not a legal adult verification or parental-consent verification.
+3. While a Kids Channel is playing, switching to a general channel may include a simple parent check (for example birth-year entry). That is not a legal adult verification or parental-consent verification.
 4. Guardians and Users remain responsible for carefully selecting and supervising content for children.
 
 Article 8 (Prohibited Conduct)

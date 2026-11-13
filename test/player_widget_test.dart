@@ -95,7 +95,7 @@ void main() {
                       onPressed: () {
                         final queue = content.buildQueue(
                           channelId: created.id,
-                          playOrder: PlayOrder.sequential,
+                          playOrder: PlayOrder.oldestAdded,
                         );
                         final l10n = AppLocalizations.of(context);
                         if (queue.isEmpty) {

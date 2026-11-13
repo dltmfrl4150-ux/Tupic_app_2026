@@ -4,11 +4,13 @@ import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 import '../../../app/theme/tupic_colors.dart';
 import '../../../core/utils/orientation_helper.dart';
+import '../../../core/utils/parental_gate.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/models/channel_video.dart';
 import '../../../shared/models/tupic_channel.dart';
 import '../../../shared/repositories/playback_progress_repository.dart';
 import '../../channels/presentation/channels_controller.dart';
+import '../../channels/presentation/parental_gate_dialog.dart';
 import '../../content/presentation/content_controller.dart';
 import '../domain/playback_phase.dart';
 import '../domain/playback_resume.dart';
@@ -193,6 +195,17 @@ class _PlayerPageState extends State<PlayerPage>
     );
     if (!mounted || selected == null) return;
     if (selected.id == widget.channel.id) return;
+
+    // Kids → general during playback requires parental gate before any
+    // target-channel queue/thumbnail load. No session cache.
+    if (requiresParentalGateForChannelSwitch(
+      fromKidsChannel: widget.channel.isKidsChannel,
+      toKidsChannel: selected.isKidsChannel,
+    )) {
+      final passed = await showParentalGateDialog(context);
+      if (!passed || !mounted) return;
+    }
+
     await _switchToChannel(selected);
   }
 

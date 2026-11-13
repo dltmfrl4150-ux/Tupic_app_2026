@@ -10,7 +10,7 @@ class TupicChannel {
     required this.videoCount,
     required this.accentColor,
     required this.createdAt,
-    this.playOrder = PlayOrder.sequential,
+    this.playOrder = PlayOrder.oldestAdded,
     this.coverLabel,
   });
 

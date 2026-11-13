@@ -16,7 +16,8 @@ Listens on `http://127.0.0.1:8787` by default.
 
 ## Android emulator
 
-Use `http://10.0.2.2:8787` from the Flutter debug app (already configured in `DevApiConfig`).
+Use `http://10.0.2.2:8787` from the Flutter Android emulator (already configured in `DevApiConfig`).
+Chrome/Web debug uses `http://127.0.0.1:8787` and requires local-dev CORS (`localhost` / `127.0.0.1` origins only).
 
 ## Endpoints
 

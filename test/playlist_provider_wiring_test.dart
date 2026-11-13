@@ -42,6 +42,20 @@ class _FakeFetcher implements PlaylistVideoFetcher {
           unplayableIds: const [],
         );
   }
+
+  @override
+  Future<ResolvedYoutubeChannel> resolveChannel({
+    String? channelId,
+    String? handle,
+    String? username,
+    String? customName,
+  }) async {
+    return ResolvedYoutubeChannel(
+      channelId: channelId ?? 'UCxxxxxxxxxxxxxxxxxxxxxx',
+      title: 'Fake Channel',
+      uploadsPlaylistId: 'UUxxxxxxxxxxxxxxxxxxxxxx',
+    );
+  }
 }
 
 class _FailingFetcher implements PlaylistVideoFetcher {
@@ -61,6 +75,19 @@ class _FailingFetcher implements PlaylistVideoFetcher {
   Future<VideoValidationResult> validateVideoIds(
     List<String> youtubeVideoIds,
   ) async {
+    throw const YoutubeApiException(
+      code: 'connection_failed',
+      message: 'server down',
+    );
+  }
+
+  @override
+  Future<ResolvedYoutubeChannel> resolveChannel({
+    String? channelId,
+    String? handle,
+    String? username,
+    String? customName,
+  }) async {
     throw const YoutubeApiException(
       code: 'connection_failed',
       message: 'server down',
@@ -143,7 +170,7 @@ void main() {
     final queue = const PlaybackQueueBuilder().build(
       sources: controller.sourcesFor(channel.id),
       videos: controller.videosFor(channel.id),
-      playOrder: PlayOrder.sequential,
+      playOrder: PlayOrder.oldestAdded,
     );
     expect(queue.map((v) => v.youtubeVideoId), ['abcdefghijk']);
   });

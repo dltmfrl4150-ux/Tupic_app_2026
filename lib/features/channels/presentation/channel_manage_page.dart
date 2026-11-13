@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../app/theme/tupic_colors.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../shared/models/play_order.dart';
 import '../../../shared/models/tupic_channel.dart';
 import '../../../shared/repositories/channel_repository.dart';
 import 'channels_controller.dart';
@@ -52,19 +51,6 @@ class _ChannelManagePageState extends State<ChannelManagePage> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.channelNameRequired)),
-      );
-    } finally {
-      if (mounted) setState(() => _saving = false);
-    }
-  }
-
-  Future<void> _setPlayOrder(TupicChannel channel, PlayOrder order) async {
-    if (channel.playOrder == order) return;
-    setState(() => _saving = true);
-    try {
-      await ChannelsScope.of(context).updatePlayOrder(
-        id: channel.id,
-        playOrder: order,
       );
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -173,37 +159,6 @@ class _ChannelManagePageState extends State<ChannelManagePage> {
               _MetaRow(
                 label: l10n.registeredVideosLabel,
                 value: l10n.videoCount(channel.videoCount),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                l10n.playOrderLabel,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: TupicColors.primaryText,
-                ),
-              ),
-              const SizedBox(height: 8),
-              SegmentedButton<PlayOrder>(
-                segments: [
-                  ButtonSegment(
-                    value: PlayOrder.sequential,
-                    label: Text(l10n.playOrderSequential),
-                    icon: const Icon(Icons.reorder),
-                  ),
-                  ButtonSegment(
-                    value: PlayOrder.shuffle,
-                    label: Text(l10n.playOrderShuffle),
-                    icon: const Icon(Icons.shuffle),
-                  ),
-                ],
-                selected: {channel.playOrder},
-                onSelectionChanged: _saving
-                    ? null
-                    : (values) {
-                        if (values.isNotEmpty) {
-                          _setPlayOrder(channel!, values.first);
-                        }
-                      },
               ),
               const SizedBox(height: 28),
               OutlinedButton.icon(

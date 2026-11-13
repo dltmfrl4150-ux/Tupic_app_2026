@@ -49,8 +49,9 @@ The following may be provided and processed during Google account authentication
 Auth sessions and tokens are managed by the Firebase Authentication SDK. The app does not store access tokens or passwords directly in SharedPreferences.
 There is currently no feature that stores channel/video lists in a cloud database such as Firestore.
 
-(3) Parent check (kids channel management)
-- Birth-year entry is used only to check an on-screen age condition and is not separately stored or transmitted in the current implementation.
+(3) Parent check (kids → general channel switch during playback)
+- Birth-year entry may be requested only when switching from a playing kids channel to a general channel.
+- Birth year is used only to check an on-screen age condition and is not stored or transmitted.
 - This is not legal identity verification, adult verification, or parental-consent verification.
 
 (4) Home display name
@@ -74,7 +75,7 @@ There is currently no feature that stores channel/video lists in a cloud databas
 - Optional Google sign-in and account status display
 - Local channel/content management and playback (including resume)
 - Maintaining app settings such as language
-- Simple access restriction for kids-channel management screens
+- Simple access restriction when switching from a kids channel to a general channel during playback
 - Local retention of Terms-of-Service consent records
 - Service improvement and error handling (no separate analytics SDK is confirmed in code)
 

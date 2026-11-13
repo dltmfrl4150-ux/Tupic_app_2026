@@ -33,7 +33,228 @@ class AppLocalizationsKo extends AppLocalizations {
   String get menuManageChannels => '채널 관리';
 
   @override
-  String get menuImportSharedChannel => '공유 채널 가져오기';
+  String get menuImportSharedChannel => '채널 탐색';
+
+  @override
+  String get exploreChannelsTitle => '채널 탐색';
+
+  @override
+  String get exploreBannerTitle => '채널 탐색';
+
+  @override
+  String get exploreBannerBody => '다른 사람들이 만든 채널을 만나보세요.';
+
+  @override
+  String get exploreBannerCta => '채널 둘러보기';
+
+  @override
+  String get homeExploreViewAll => '전체보기';
+
+  @override
+  String get homeExploreSearchEntry => '채널 또는 콘텐츠 검색';
+
+  @override
+  String get homeExploreCategoryPopular => '인기';
+
+  @override
+  String get homeExploreCategoryLatest => '최신';
+
+  @override
+  String get exploreSearchHint => '어떤 채널을 찾으세요?';
+
+  @override
+  String get exploreSearchPrefixHint => '채널 이름 앞부분으로 검색합니다. (대소문자 구분)';
+
+  @override
+  String get exploreSearchComingSoon => '검색은 준비 중이에요.';
+
+  @override
+  String get exploreCategoryComingSoon => '카테고리 필터는 준비 중이에요.';
+
+  @override
+  String get exploreRecommendedSection => '추천 채널';
+
+  @override
+  String get exploreLatestSection => '최신 채널';
+
+  @override
+  String get exploreEmptyTitle => '아직 공유된 채널이 없어요.';
+
+  @override
+  String get exploreEmptyBody => '첫 번째 채널을 공유해 보세요!';
+
+  @override
+  String get exploreLoadFailedTitle => '채널을 불러오지 못했어요.';
+
+  @override
+  String get exploreLoadFailedBody => '네트워크 상태를 확인한 뒤 다시 시도해 주세요.';
+
+  @override
+  String get exploreLoadMore => '더 보기';
+
+  @override
+  String get exploreShareMyChannel => '내 채널 공유하기';
+
+  @override
+  String get exploreShareComingSoon => '채널 공유 기능을 준비하고 있어요.';
+
+  @override
+  String get exploreNoLocalChannelsToShare => '공유할 채널이 없어요. 먼저 채널을 만들어 주세요.';
+
+  @override
+  String get sharePreviewTitle => '공유 채널';
+
+  @override
+  String get sharePreviewUnavailable => '이 공유 채널을 볼 수 없어요.';
+
+  @override
+  String get sharePreviewVideosSection => '공유된 영상';
+
+  @override
+  String get sharePreviewAddChannel => '채널 추가';
+
+  @override
+  String get sharePreviewAddVideos => '내 채널에 영상 추가';
+
+  @override
+  String shareVersionLabel(int version) {
+    return 'v$version';
+  }
+
+  @override
+  String get retry => '다시 시도';
+
+  @override
+  String get exploreCategoryAll => '전체';
+
+  @override
+  String get exploreCategoryKids => '키즈';
+
+  @override
+  String get exploreCategoryEducation => '교육';
+
+  @override
+  String get exploreCategoryMusic => '음악';
+
+  @override
+  String get exploreCategoryEntertainment => '엔터테인먼트';
+
+  @override
+  String get exploreCategoryGames => '게임';
+
+  @override
+  String get exploreCategorySports => '운동';
+
+  @override
+  String get exploreCategoryLifestyle => '라이프스타일';
+
+  @override
+  String get exploreCategoryOther => '기타';
+
+  @override
+  String get accountNicknameSuggestGoogle =>
+      'Google 이름을 후보로 넣었어요. 원하는 공개 닉네임으로 수정할 수 있습니다.';
+
+  @override
+  String get shareChannelTitle => '채널 공유하기';
+
+  @override
+  String get shareChannelAction => '채널 공유하기';
+
+  @override
+  String get shareAsNewVersionTitle => '새 버전으로 공유하기';
+
+  @override
+  String get shareAsNewVersionAction => '새 버전으로 공유하기';
+
+  @override
+  String shareNewVersionHint(int version, int next) {
+    return '기존 v$version은 그대로 유지되고, 현재 채널이 v$next로 새롭게 공유됩니다.';
+  }
+
+  @override
+  String get shareConfirmNewVersionCheckbox => '새 버전으로 공유하는 것을 확인했습니다';
+
+  @override
+  String get shareConfirmNewVersionRequired => '새 버전 공유를 확인하려면 체크해 주세요.';
+
+  @override
+  String get shareCategoryLabel => '카테고리';
+
+  @override
+  String get shareDescriptionLabel => '공유 설명 (선택)';
+
+  @override
+  String get shareDescriptionHint => '이 채널을 소개하는 짧은 설명을 적어 주세요';
+
+  @override
+  String sharePublicNicknameLabel(String nickname) {
+    return '공개 닉네임: $nickname';
+  }
+
+  @override
+  String get shareNeedSignIn => '채널을 공유하려면 로그인해 주세요.';
+
+  @override
+  String get shareNeedNickname => '공유하려면 먼저 공개 닉네임을 설정해 주세요.';
+
+  @override
+  String get shareNoVideos => '공유할 영상이 없습니다. 영상을 추가한 뒤 다시 시도해 주세요.';
+
+  @override
+  String get shareTooManyVideos => '영상 수가 너무 많아 공유할 수 없습니다.';
+
+  @override
+  String get shareNonShareableSource => '공개 공유할 수 없는 콘텐츠가 포함되어 있습니다.';
+
+  @override
+  String get shareInvalidCategory => '카테고리를 선택해 주세요.';
+
+  @override
+  String get shareUnavailable => '공유 서비스를 사용할 수 없습니다. 잠시 후 다시 시도해 주세요.';
+
+  @override
+  String get sharePermissionDenied => '이 채널을 공유할 권한이 없습니다.';
+
+  @override
+  String get sharePublishFailed => '채널을 공유하지 못했습니다. 다시 시도해 주세요.';
+
+  @override
+  String sharePublishSuccess(int version) {
+    return '채널이 v$version으로 공유되었습니다.';
+  }
+
+  @override
+  String get mySharedChannelsTitle => '공유한 내 채널';
+
+  @override
+  String get mySharedChannelsEmpty => '아직 공유한 채널이 없습니다.';
+
+  @override
+  String get shareStatusPublished => '공개';
+
+  @override
+  String get shareStatusCancelled => '공유 취소됨';
+
+  @override
+  String get shareCancelAction => '공유 취소';
+
+  @override
+  String get shareCancelTitle => '이 버전 공유를 취소할까요?';
+
+  @override
+  String shareCancelBody(String title, int version) {
+    return '「$title」 v$version 공유가 목록에서 숨겨집니다. 이미 가져온 채널에는 영향을 주지 않습니다.';
+  }
+
+  @override
+  String get shareCancelConfirm => '공유 취소';
+
+  @override
+  String get shareCancelSuccess => '해당 버전 공유를 취소했습니다.';
+
+  @override
+  String get shareCancelFailed => '공유를 취소하지 못했습니다.';
 
   @override
   String get menuSettings => '설정';
@@ -187,7 +408,15 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get accountSignInUnavailable =>
-      '이 빌드에서는 Google 로그인을 사용할 수 없습니다. Android Firebase 빌드에서 이용해 주세요.';
+      '이 환경에서는 Google 로그인을 사용할 수 없습니다. Android 또는 Chrome(웹) Firebase 빌드에서 이용해 주세요.';
+
+  @override
+  String get accountSignInPopupBlocked =>
+      '로그인 팝업이 차단되었습니다. 브라우저에서 팝업을 허용한 뒤 다시 시도해 주세요.';
+
+  @override
+  String get accountSignInUnauthorizedDomain =>
+      '이 웹 도메인은 Firebase Authentication에 허용되지 않았습니다.';
 
   @override
   String get accountConsentRequired => '서비스 이용을 위해 필수 약관에 동의해 주세요.';
@@ -198,6 +427,60 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get accountLocalDataNote =>
       '로컬에 저장된 채널·영상·이어보기는 이 Google 계정 소유로 표시되거나 자동 업로드되지 않습니다.';
+
+  @override
+  String get accountGoogleSectionTitle => 'Google 계정';
+
+  @override
+  String get accountPublicNicknameSectionTitle => '공개 닉네임';
+
+  @override
+  String get accountPublicNicknameHint =>
+      '공유 채널에 표시되는 이름입니다. Google 이름·이메일과 별개입니다.';
+
+  @override
+  String get accountPublicNicknameEmpty => '아직 공개 닉네임이 없습니다.';
+
+  @override
+  String get accountPublicNicknameLabel => '공개 닉네임';
+
+  @override
+  String get accountSetNickname => '닉네임 설정';
+
+  @override
+  String get accountChangeNickname => '닉네임 변경';
+
+  @override
+  String get accountNicknameDialogTitle => '공개 닉네임';
+
+  @override
+  String get accountNicknameSaveSuccess => '공개 닉네임이 저장되었습니다.';
+
+  @override
+  String get accountNicknameUnavailable =>
+      '공개 프로필 저장소를 사용할 수 없습니다. Firebase Console에서 Cloud Firestore를 활성화한 뒤 다시 시도해 주세요.';
+
+  @override
+  String get accountNicknameNotSignedIn => '공개 닉네임을 저장하려면 로그인해 주세요.';
+
+  @override
+  String get accountNicknamePermissionDenied => '이 프로필을 수정할 권한이 없습니다.';
+
+  @override
+  String get accountNicknameSaveFailed => '닉네임을 저장하지 못했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get accountNicknameInvalidEmpty => '닉네임을 입력해 주세요.';
+
+  @override
+  String get accountNicknameInvalidLength => '닉네임은 2~20자로 입력해 주세요.';
+
+  @override
+  String get accountNicknameInvalidChars =>
+      '사용할 수 없는 문자입니다. 이메일 형식(@)은 사용할 수 없습니다.';
+
+  @override
+  String get accountNicknameInappropriate => '사용할 수 없는 닉네임입니다.';
 
   @override
   String get accountUnder14Policy =>
@@ -243,6 +526,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get premiumTitle => 'Premium';
 
   @override
+  String get premiumDeveloperTestBadge => 'Premium (개발 테스트)';
+
+  @override
   String get premiumBody => '더 많은 채널, 높은 한도, 자동 동기화. 결제는 아직 활성화되지 않았습니다.';
 
   @override
@@ -266,16 +552,28 @@ class AppLocalizationsKo extends AppLocalizations {
   String get manageThisChannel => '채널 관리';
 
   @override
+  String get channelSettingsTooltip => '채널 설정';
+
+  @override
   String get channelVideosComingSoon => 'YouTube 영상 추가는 다음 단계에서 제공됩니다.';
 
   @override
   String get playOrderLabel => '재생 순서';
 
   @override
-  String get playOrderSequential => '순차';
+  String get playOrderTitleAsc => '오름차순';
 
   @override
-  String get playOrderShuffle => '무작위';
+  String get playOrderTitleDesc => '내림차순';
+
+  @override
+  String get playOrderNewestAdded => '최신순';
+
+  @override
+  String get playOrderOldestAdded => '오래된순';
+
+  @override
+  String get playOrderShuffle => '랜덤';
 
   @override
   String get channelTypeLabel => '채널 유형';
@@ -301,7 +599,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get parentalGateTitle => '보호자 확인';
 
   @override
-  String get parentalGateBody => '키즈용 채널 관리로 이동하려면 출생연도를 입력해 주세요.';
+  String get parentalGateBody => '키즈 채널 재생 중 일반 채널로 전환하려면 출생연도를 입력해 주세요.';
 
   @override
   String get parentalGateHint => 'YYYY';
@@ -316,7 +614,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get parentalGateDenied => '18세 이상만 이용할 수 있습니다.';
 
   @override
-  String get parentalGateDisclaimer => '법적 성인 인증이 아닌 간단한 접근 제한입니다.';
+  String get parentalGateDisclaimer =>
+      '법적 성인 인증이 아닌 간단한 접근 제한입니다. 출생연도는 저장되지 않습니다.';
 
   @override
   String get importSharedPlaceholder => '공유 채널 가져오기는 이후 단계에서 제공됩니다.';
@@ -331,10 +630,68 @@ class AppLocalizationsKo extends AppLocalizations {
   String get addContentUrlHint => 'YouTube 링크를 붙여넣으세요';
 
   @override
+  String get openYoutubeTooltip => 'YouTube 열기';
+
+  @override
+  String get openYoutubeFailed => 'YouTube를 열 수 없습니다.';
+
+  @override
   String get paste => '붙여넣기';
 
   @override
   String get analyzeUrl => '분석';
+
+  @override
+  String get confirmContent => '콘텐츠 확인';
+
+  @override
+  String get addSingleVideo => '영상 추가';
+
+  @override
+  String get addSelectedVideos => '선택한 영상 추가';
+
+  @override
+  String get checkNewVideos => '새 영상 확인';
+
+  @override
+  String get contentNothingSelected => '추가할 영상을 선택해 주세요.';
+
+  @override
+  String contentImportSuccess(int count) {
+    return '영상 $count개를 추가했습니다.';
+  }
+
+  @override
+  String contentImportPartial(int imported, int omitted) {
+    return '영상 $imported개를 추가했습니다. 한도로 인해 $omitted개는 제외되었습니다.';
+  }
+
+  @override
+  String get contentCreatorResolveFailed => '유튜버 채널을 확인할 수 없습니다. 링크를 확인해 주세요.';
+
+  @override
+  String get previewSortTitleAsc => '이름 오름차순';
+
+  @override
+  String get previewSortTitleDesc => '이름 내림차순';
+
+  @override
+  String get previewSortNewest => '최신순';
+
+  @override
+  String get previewSortOldest => '오래된순';
+
+  @override
+  String get selectAllVideos => '전체 선택';
+
+  @override
+  String get clearVideoSelection => '선택 해제';
+
+  @override
+  String get loadMoreVideos => '더 불러오기';
+
+  @override
+  String get noNewCreatorVideos => '새로 추가할 영상이 없습니다.';
 
   @override
   String get registerContent => '등록';
@@ -485,6 +842,28 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String get contentAgeRestrictedBlocked => 'YouTube 연령 제한 영상은 추가할 수 없습니다.';
+
+  @override
+  String get contentVideoVerificationFailed =>
+      '영상 정보를 확인할 수 없습니다. 잠시 후 다시 시도해 주세요.';
+
+  @override
+  String get contentProxyConnectionFailed =>
+      '영상 확인 서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.';
+
+  @override
+  String get contentProxyQuotaExceeded => '영상 확인 요청 한도에 도달했습니다.';
+
+  @override
+  String get contentProxyVerifyFailed => '영상 정보를 확인할 수 없습니다.';
+
+  @override
+  String playlistAgeRestrictedExcluded(int count) {
+    return '연령 제한 영상 $count개를 제외했습니다.';
+  }
+
+  @override
   String get localServerRequired =>
       '로컬 YouTube 서버가 필요합니다. server 폴더에서 npm start를 실행하세요.';
 
@@ -543,6 +922,23 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get restoreVideo => '재생에 복원';
+
+  @override
+  String get editVideoTitle => '제목 수정';
+
+  @override
+  String get editVideoTitleTitle => '영상 제목 수정';
+
+  @override
+  String get editVideoTitleLabel => '표시 제목';
+
+  @override
+  String get restoreOriginalTitle => '원본 제목으로 복원';
+
+  @override
+  String originalVideoTitleHint(String title) {
+    return '원본: $title';
+  }
 
   @override
   String get videoExcluded => '제외됨';

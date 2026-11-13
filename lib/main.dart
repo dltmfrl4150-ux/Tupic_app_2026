@@ -38,16 +38,15 @@ Future<void> main() async {
   );
 }
 
-/// Initializes Firebase only for configured platforms (Android in STEP 5C-2).
+/// Initializes Firebase for Android and Web (same tupic-project).
 /// Never falls back to an arbitrary Firebase project on failure.
 Future<bool> _initializeFirebaseSafely() async {
-  if (kIsWeb) {
-    debugPrint('Firebase: web not configured in STEP 5C-2.');
-    return false;
-  }
-  if (defaultTargetPlatform != TargetPlatform.android) {
+  final supported =
+      kIsWeb || defaultTargetPlatform == TargetPlatform.android;
+  if (!supported) {
     debugPrint(
-      'Firebase: skipping init on $defaultTargetPlatform (Android-first).',
+      'Firebase: skipping init on $defaultTargetPlatform '
+      '(Android/Web configured).',
     );
     return false;
   }

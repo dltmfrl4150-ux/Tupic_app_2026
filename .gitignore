@@ -37,9 +37,14 @@ migrate_working_dir/
 server/.env
 server/youtubeapi_*.env
 server/node_modules/
+**/node_modules/
 **/*.pem
 **/youtube_api_key*.txt
 **/api_key*.txt
+
+# STEP 5D-3: local developer Premium test UIDs (never commit real UIDs)
+tool/dev_premium.defines.json
+**/*dev_premium*.local.*
 
 # Symbolication related
 app.*.symbols

@@ -21,7 +21,7 @@ void main() {
     );
     expect(created.name, '우주 채널');
     expect(created.isKidsChannel, isTrue);
-    expect(created.playOrder, PlayOrder.sequential);
+    expect(created.playOrder, PlayOrder.oldestAdded);
     expect(await repo.getLastSelectedChannelId(), created.id);
 
     final renamed = await repo.renameChannel(id: created.id, name: '탐험 채널');
@@ -32,6 +32,17 @@ void main() {
       playOrder: PlayOrder.shuffle,
     );
     expect(shuffled.playOrder, PlayOrder.shuffle);
+
+    final titled = await repo.updatePlayOrder(
+      id: created.id,
+      playOrder: PlayOrder.titleAsc,
+    );
+    expect(titled.playOrder, PlayOrder.titleAsc);
+
+    final prefs = await SharedPreferences.getInstance();
+    final reloaded = LocalChannelRepository(prefs: prefs);
+    final restored = (await reloaded.getChannels()).single;
+    expect(restored.playOrder, PlayOrder.titleAsc);
 
     await repo.deleteChannel(created.id);
     expect(await repo.getChannels(), isEmpty);

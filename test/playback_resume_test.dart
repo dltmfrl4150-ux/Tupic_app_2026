@@ -22,7 +22,7 @@ void main() {
     test('empty queue', () {
       final plan = PlaybackResume.resolve(
         builtQueue: const [],
-        playOrder: PlayOrder.sequential,
+        playOrder: PlayOrder.oldestAdded,
       );
       expect(plan.queue, isEmpty);
       expect(plan.index, -1);
@@ -31,7 +31,7 @@ void main() {
     test('starts at first video without progress', () {
       final plan = PlaybackResume.resolve(
         builtQueue: [_v('a'), _v('b', order: 1)],
-        playOrder: PlayOrder.sequential,
+        playOrder: PlayOrder.oldestAdded,
       );
       expect(plan.index, 0);
       expect(plan.startSeconds, 0);
@@ -41,7 +41,7 @@ void main() {
     test('restores saved video and position', () {
       final plan = PlaybackResume.resolve(
         builtQueue: [_v('a'), _v('b', order: 1), _v('c', order: 2)],
-        playOrder: PlayOrder.sequential,
+        playOrder: PlayOrder.oldestAdded,
         progress: ChannelPlaybackProgress(
           tupicChannelId: 'ch',
           youtubeVideoId: 'b',
@@ -57,7 +57,7 @@ void main() {
     test('invalid negative position becomes 0', () {
       final plan = PlaybackResume.resolve(
         builtQueue: [_v('a')],
-        playOrder: PlayOrder.sequential,
+        playOrder: PlayOrder.oldestAdded,
         progress: ChannelPlaybackProgress(
           tupicChannelId: 'ch',
           youtubeVideoId: 'a',
@@ -71,7 +71,7 @@ void main() {
     test('missing video falls back to first', () {
       final plan = PlaybackResume.resolve(
         builtQueue: [_v('a'), _v('b', order: 1)],
-        playOrder: PlayOrder.sequential,
+        playOrder: PlayOrder.oldestAdded,
         progress: ChannelPlaybackProgress(
           tupicChannelId: 'ch',
           youtubeVideoId: 'gone',
@@ -87,7 +87,7 @@ void main() {
     test('pruned last-watched advances to next session id', () {
       final plan = PlaybackResume.resolve(
         builtQueue: [_v('a'), _v('c', order: 2)],
-        playOrder: PlayOrder.sequential,
+        playOrder: PlayOrder.oldestAdded,
         progress: ChannelPlaybackProgress(
           tupicChannelId: 'ch',
           youtubeVideoId: 'b',
@@ -105,7 +105,7 @@ void main() {
     test('near end with known duration advances to next', () {
       final plan = PlaybackResume.resolve(
         builtQueue: [_v('a'), _v('b', order: 1)],
-        playOrder: PlayOrder.sequential,
+        playOrder: PlayOrder.oldestAdded,
         knownDurationSeconds: 100,
         progress: ChannelPlaybackProgress(
           tupicChannelId: 'ch',
@@ -121,7 +121,7 @@ void main() {
     test('force video id overrides resume', () {
       final plan = PlaybackResume.resolve(
         builtQueue: [_v('a'), _v('b', order: 1)],
-        playOrder: PlayOrder.sequential,
+        playOrder: PlayOrder.oldestAdded,
         forceYoutubeVideoId: 'b',
         progress: ChannelPlaybackProgress(
           tupicChannelId: 'ch',

@@ -10,4 +10,12 @@ abstract class PlaylistVideoFetcher {
 
   /// Re-validates existing local video IDs via the proxy `videos.list` path.
   Future<VideoValidationResult> validateVideoIds(List<String> youtubeVideoIds);
+
+  /// Resolves a creator channel to its uploads playlist (channels.list).
+  Future<ResolvedYoutubeChannel> resolveChannel({
+    String? channelId,
+    String? handle,
+    String? username,
+    String? customName,
+  });
 }

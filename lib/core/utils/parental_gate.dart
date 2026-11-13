@@ -12,3 +12,12 @@ int? parseBirthYear(String input) {
   if (trimmed.length != 4) return null;
   return int.tryParse(trimmed);
 }
+
+/// Parental gate is required only when leaving a kids channel for a general
+/// channel during playback. Management screens never use this.
+bool requiresParentalGateForChannelSwitch({
+  required bool fromKidsChannel,
+  required bool toKidsChannel,
+}) {
+  return fromKidsChannel && !toKidsChannel;
+}

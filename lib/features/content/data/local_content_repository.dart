@@ -19,15 +19,16 @@ class LocalContentRepository implements ContentRepository {
   LocalContentRepository({
     SharedPreferences? prefs,
     this.maxVideosPerChannel = PlanLimits.freeMaxVideosPerChannel,
-    this.isPremium = PlanLimits.isPremium,
     Random? random,
   }) : _prefsOverride = prefs,
        _random = random ?? Random();
 
   final SharedPreferences? _prefsOverride;
   final int maxVideosPerChannel;
-  final bool isPremium;
   final Random _random;
+
+  /// Reflects current [PlanLimits.isPremium] (debug developer test included).
+  bool get isPremium => PlanLimits.isPremium;
   SharedPreferences? _cachedPrefs;
 
   /// When true, last load failed and empty data must not overwrite storage.
@@ -68,6 +69,9 @@ class LocalContentRepository implements ContentRepository {
     required String originalUrl,
     required String youtubeVideoId,
     required String displayName,
+    String? originalTitle,
+    String? customTitle,
+    String? thumbnailUrl,
   }) async {
     final videos = await _loadVideos();
     final channelVideos =
@@ -84,18 +88,40 @@ class LocalContentRepository implements ContentRepository {
       throw VideoLimitExceededException(maxVideosPerChannel);
     }
 
+    final resolvedOriginal = _cleanTitle(originalTitle);
+    final resolvedCustom = _cleanTitle(customTitle);
     final now = DateTime.now();
     final sourceId =
         'src_${now.microsecondsSinceEpoch}_${_random.nextInt(9999)}';
+
+    final draft = ChannelVideo(
+      youtubeVideoId: youtubeVideoId,
+      tupicChannelId: tupicChannelId,
+      sourceIds: const [],
+      title: '',
+      originalTitle: resolvedOriginal,
+      customTitle: resolvedCustom,
+      thumbnailUrl:
+          thumbnailUrl ?? ChannelVideo.defaultThumbnailUrl(youtubeVideoId),
+      metadataStatus: resolvedOriginal != null
+          ? MetadataStatus.resolved
+          : MetadataStatus.unresolved,
+      addedAt: now,
+      manualOrder: 0,
+    );
+    final display = draft.displayTitle.isNotEmpty
+        ? draft.displayTitle
+        : (displayName.trim().isEmpty
+            ? ChannelVideo.provisionalTitle(youtubeVideoId)
+            : displayName.trim());
+
     final source = ContentSource(
       id: sourceId,
       tupicChannelId: tupicChannelId,
       sourceType: ContentSourceType.video,
       originalUrl: originalUrl,
       youtubeVideoId: youtubeVideoId,
-      displayName: displayName.trim().isEmpty
-          ? ChannelVideo.provisionalTitle(youtubeVideoId)
-          : displayName.trim(),
+      displayName: display,
       createdAt: now,
       updatedAt: now,
       importStatus: ImportStatus.ready,
@@ -112,9 +138,14 @@ class LocalContentRepository implements ContentRepository {
       youtubeVideoId: youtubeVideoId,
       tupicChannelId: tupicChannelId,
       sourceIds: [sourceId],
-      title: source.displayName,
-      thumbnailUrl: ChannelVideo.defaultThumbnailUrl(youtubeVideoId),
-      metadataStatus: MetadataStatus.unresolved,
+      title: display,
+      originalTitle: resolvedOriginal,
+      customTitle: resolvedCustom,
+      thumbnailUrl:
+          thumbnailUrl ?? ChannelVideo.defaultThumbnailUrl(youtubeVideoId),
+      metadataStatus: resolvedOriginal != null
+          ? MetadataStatus.resolved
+          : MetadataStatus.unresolved,
       addedAt: now,
       manualOrder: nextOrder,
     );
@@ -123,6 +154,37 @@ class LocalContentRepository implements ContentRepository {
     await _saveSources([...sources, source]);
     await _saveVideos([...videos, video]);
     return source;
+  }
+
+  @override
+  Future<ChannelVideo> updateVideoCustomTitle({
+    required String tupicChannelId,
+    required String youtubeVideoId,
+    String? customTitle,
+  }) async {
+    final videos = await _loadVideos();
+    final index = videos.indexWhere(
+      (v) =>
+          v.tupicChannelId == tupicChannelId &&
+          v.youtubeVideoId == youtubeVideoId,
+    );
+    if (index < 0) {
+      throw StateError('Video not found: $youtubeVideoId');
+    }
+    final cleaned = _cleanTitle(customTitle);
+    final updated = cleaned == null
+        ? videos[index].copyWith(clearCustomTitle: true)
+        : videos[index].copyWith(customTitle: cleaned);
+    final next = [...videos];
+    next[index] = updated;
+    await _saveVideos(next);
+    return updated;
+  }
+
+  String? _cleanTitle(String? value) {
+    if (value == null) return null;
+    final trimmed = value.trim();
+    return trimmed.isEmpty ? null : trimmed;
   }
 
   @override
@@ -160,6 +222,7 @@ class LocalContentRepository implements ContentRepository {
     String? youtubeHandle,
     String? youtubeUsername,
     String? youtubeCustomName,
+    String? youtubePlaylistId,
     CreatorImportMode importMode = CreatorImportMode.recent30,
     CreatorSortOrder sortOrder = CreatorSortOrder.newest,
     bool autoSyncEnabled = false,
@@ -199,6 +262,7 @@ class LocalContentRepository implements ContentRepository {
       youtubeHandle: youtubeHandle,
       youtubeUsername: youtubeUsername,
       youtubeCustomName: youtubeCustomName,
+      youtubePlaylistId: youtubePlaylistId,
       displayName: label,
       createdAt: now,
       updatedAt: now,
@@ -401,13 +465,16 @@ class LocalContentRepository implements ContentRepository {
     int excludedPrivateDeleted = 0,
     int excludedNotEmbeddable = 0,
     int excludedMissing = 0,
+    int excludedAgeRestricted = 0,
+    int excludedVerificationFailed = 0,
     Set<String> unplayableVideoIds = const {},
   }) async {
     final sources = await _loadSources();
     final sourceIndex = sources.indexWhere((s) => s.id == sourceId);
     if (sourceIndex < 0) throw ContentSourceNotFoundException(sourceId);
     final source = sources[sourceIndex];
-    if (source.sourceType != ContentSourceType.playlist) {
+    if (source.sourceType != ContentSourceType.playlist &&
+        source.sourceType != ContentSourceType.creator) {
       throw ContentSourceNotFoundException(sourceId);
     }
 
@@ -468,22 +535,29 @@ class LocalContentRepository implements ContentRepository {
       final existing = byId[item.youtubeVideoId];
       if (existing != null) {
         duplicates++;
-        if (!existing.sourceIds.contains(sourceId)) {
-          final idx = nextVideos.indexWhere(
-            (v) =>
-                v.tupicChannelId == source.tupicChannelId &&
-                v.youtubeVideoId == item.youtubeVideoId,
+        final idx = nextVideos.indexWhere(
+          (v) =>
+              v.tupicChannelId == source.tupicChannelId &&
+              v.youtubeVideoId == item.youtubeVideoId,
+        );
+        if (idx >= 0) {
+          final current = nextVideos[idx];
+          final needsLink = !current.sourceIds.contains(sourceId);
+          final apiTitle = _cleanTitle(item.title);
+          // Fill missing originalTitle from API; never overwrite customTitle.
+          final nextOriginal = current.originalTitle ?? apiTitle;
+          final linked = current.copyWith(
+            sourceIds: needsLink
+                ? [...current.sourceIds, sourceId]
+                : current.sourceIds,
+            originalTitle: nextOriginal,
+            thumbnailUrl: item.thumbnailUrl ?? current.thumbnailUrl,
+            metadataStatus: nextOriginal != null
+                ? MetadataStatus.resolved
+                : current.metadataStatus,
           );
-          if (idx >= 0) {
-            final linked = nextVideos[idx].copyWith(
-              sourceIds: [...nextVideos[idx].sourceIds, sourceId],
-              title: item.title,
-              thumbnailUrl: item.thumbnailUrl ?? nextVideos[idx].thumbnailUrl,
-              metadataStatus: MetadataStatus.resolved,
-            );
-            nextVideos[idx] = linked;
-            byId[item.youtubeVideoId] = linked;
-          }
+          nextVideos[idx] = linked;
+          byId[item.youtubeVideoId] = linked;
         }
         continue;
       }
@@ -493,11 +567,13 @@ class LocalContentRepository implements ContentRepository {
         continue;
       }
 
+      final apiTitle = _cleanTitle(item.title);
       final video = ChannelVideo(
         youtubeVideoId: item.youtubeVideoId,
         tupicChannelId: source.tupicChannelId,
         sourceIds: [sourceId],
-        title: item.title,
+        title: apiTitle ?? item.title,
+        originalTitle: apiTitle,
         thumbnailUrl:
             item.thumbnailUrl ??
             ChannelVideo.defaultThumbnailUrl(item.youtubeVideoId),
@@ -551,6 +627,8 @@ class LocalContentRepository implements ContentRepository {
       excludedPrivateDeleted: excludedPrivateDeleted,
       excludedNotEmbeddable: excludedNotEmbeddable,
       excludedMissing: excludedMissing,
+      excludedAgeRestricted: excludedAgeRestricted,
+      excludedVerificationFailed: excludedVerificationFailed,
       prunedUnplayableCount: prunedUnplayableCount,
     );
   }

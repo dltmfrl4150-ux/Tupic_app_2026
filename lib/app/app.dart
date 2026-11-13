@@ -8,16 +8,27 @@ import '../features/content/data/http_youtube_playlist_provider.dart';
 import '../features/content/data/local_content_repository.dart';
 import '../features/content/data/playlist_video_fetcher.dart';
 import '../features/content/presentation/content_controller.dart';
+import '../features/explore/data/firestore_shared_channel_catalog_repository.dart';
+import '../features/explore/presentation/shared_catalog_scope.dart';
 import '../features/home/data/mock_home_repository.dart';
 import '../features/home/presentation/home_controller.dart';
 import '../features/home/presentation/home_page.dart';
 import '../features/player/data/local_playback_progress_repository.dart';
 import '../features/player/presentation/playback_progress_scope.dart';
+import '../features/profile/data/firestore_public_profile_repository.dart';
+import '../features/profile/data/unavailable_public_profile_repository.dart';
+import '../features/profile/presentation/public_profile_controller.dart';
+import '../features/share/data/firestore_channel_share_repository.dart';
+import '../features/share/data/unavailable_channel_share_repository.dart';
+import '../features/share/presentation/channel_share_controller.dart';
 import '../l10n/app_localizations.dart';
 import '../shared/repositories/channel_repository.dart';
+import '../shared/repositories/channel_share_repository.dart';
 import '../shared/repositories/content_repository.dart';
 import '../shared/repositories/home_repository.dart';
 import '../shared/repositories/playback_progress_repository.dart';
+import '../shared/repositories/public_profile_repository.dart';
+import '../shared/repositories/shared_channel_catalog_repository.dart';
 import 'locale_controller.dart';
 import 'theme/tupic_theme.dart';
 
@@ -31,6 +42,11 @@ class TupicApp extends StatefulWidget {
     this.channelRepository,
     this.contentRepository,
     this.playbackProgressRepository,
+    this.publicProfileRepository,
+    this.publicProfileController,
+    this.channelShareRepository,
+    this.channelShareController,
+    this.sharedChannelCatalogRepository,
     this.playlistFetcher,
     this.channelsController,
     this.contentController,
@@ -38,7 +54,7 @@ class TupicApp extends StatefulWidget {
 
   final LocaleController localeController;
 
-  /// True only after successful Firebase.initializeApp (Android).
+  /// True after successful Firebase.initializeApp (Android / Web).
   final bool firebaseReady;
 
   /// Optional override for tests.
@@ -47,6 +63,11 @@ class TupicApp extends StatefulWidget {
   final ChannelRepository? channelRepository;
   final ContentRepository? contentRepository;
   final PlaybackProgressRepository? playbackProgressRepository;
+  final PublicProfileRepository? publicProfileRepository;
+  final PublicProfileController? publicProfileController;
+  final ChannelShareRepository? channelShareRepository;
+  final ChannelShareController? channelShareController;
+  final SharedChannelCatalogRepository? sharedChannelCatalogRepository;
   final PlaylistVideoFetcher? playlistFetcher;
   final ChannelsController? channelsController;
   final ContentController? contentController;
@@ -94,9 +115,48 @@ class _TupicAppState extends State<TupicApp> {
       widget.authController ??
       AuthController(firebaseReady: widget.firebaseReady);
 
+  late final PublicProfileRepository _publicProfileRepository =
+      widget.publicProfileRepository ??
+      (widget.firebaseReady
+          ? FirestorePublicProfileRepository()
+          : const UnavailablePublicProfileRepository(
+              'Firebase/Firestore is not ready on this build.',
+            ));
+
+  late final PublicProfileController _publicProfileController =
+      widget.publicProfileController ??
+      PublicProfileController(
+        authController: _authController,
+        repository: _publicProfileRepository,
+      );
+
+  late final ChannelShareRepository _channelShareRepository =
+      widget.channelShareRepository ??
+      (widget.firebaseReady
+          ? FirestoreChannelShareRepository()
+          : const UnavailableChannelShareRepository(
+              'Firebase/Firestore is not ready on this build.',
+            ));
+
+  late final ChannelShareController _channelShareController =
+      widget.channelShareController ??
+      ChannelShareController(
+        authController: _authController,
+        profileController: _publicProfileController,
+        repository: _channelShareRepository,
+      );
+
+  late final SharedChannelCatalogRepository _sharedCatalog =
+      widget.sharedChannelCatalogRepository ??
+      (widget.firebaseReady
+          ? FirestoreSharedChannelCatalogRepository()
+          : const EmptySharedChannelCatalogRepository());
+
   bool _ownsChannelsController = false;
   bool _ownsContentController = false;
   bool _ownsAuthController = false;
+  bool _ownsPublicProfileController = false;
+  bool _ownsChannelShareController = false;
 
   @override
   void initState() {
@@ -104,6 +164,8 @@ class _TupicAppState extends State<TupicApp> {
     _ownsChannelsController = widget.channelsController == null;
     _ownsContentController = widget.contentController == null;
     _ownsAuthController = widget.authController == null;
+    _ownsPublicProfileController = widget.publicProfileController == null;
+    _ownsChannelShareController = widget.channelShareController == null;
     _channelsController.load().then((_) {
       final ids = _channelsController.channels.map((c) => c.id);
       return _contentController.refreshCounts(ids);
@@ -113,6 +175,12 @@ class _TupicAppState extends State<TupicApp> {
   @override
   void dispose() {
     _homeController.dispose();
+    if (_ownsChannelShareController) {
+      _channelShareController.dispose();
+    }
+    if (_ownsPublicProfileController) {
+      _publicProfileController.dispose();
+    }
     if (_ownsAuthController) {
       _authController.dispose();
     }
@@ -131,40 +199,49 @@ class _TupicAppState extends State<TupicApp> {
       controller: widget.localeController,
       child: AuthScope(
         controller: _authController,
-        child: ChannelsScope(
-          controller: _channelsController,
-          child: ContentScope(
-            controller: _contentController,
-            child: PlaybackProgressScope(
-              repository: _progressRepository,
-              child: ListenableBuilder(
-                listenable: widget.localeController,
-                builder: (context, _) {
-                  return MaterialApp(
-                    title: 'TUPIC',
-                    debugShowCheckedModeBanner: false,
-                    theme: TupicTheme.dark(),
-                    locale: widget.localeController.localeOverride,
-                    supportedLocales: AppLocalizations.supportedLocales,
-                    localizationsDelegates: const [
-                      AppLocalizations.delegate,
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                      GlobalCupertinoLocalizations.delegate,
-                    ],
-                    localeResolutionCallback: (locale, supported) {
-                      if (locale == null) return const Locale('en');
-                      for (final supportedLocale in supported) {
-                        if (supportedLocale.languageCode ==
-                            locale.languageCode) {
-                          return supportedLocale;
-                        }
-                      }
-                      return const Locale('en');
-                    },
-                    home: HomePage(controller: _homeController),
-                  );
-                },
+        child: PublicProfileScope(
+          controller: _publicProfileController,
+          child: ChannelShareScope(
+            controller: _channelShareController,
+            child: SharedCatalogScope(
+              catalog: _sharedCatalog,
+              child: ChannelsScope(
+                controller: _channelsController,
+                child: ContentScope(
+                  controller: _contentController,
+                  child: PlaybackProgressScope(
+                    repository: _progressRepository,
+                    child: ListenableBuilder(
+                      listenable: widget.localeController,
+                      builder: (context, _) {
+                        return MaterialApp(
+                          title: 'TUPIC',
+                          debugShowCheckedModeBanner: false,
+                          theme: TupicTheme.dark(),
+                          locale: widget.localeController.localeOverride,
+                          supportedLocales: AppLocalizations.supportedLocales,
+                          localizationsDelegates: const [
+                            AppLocalizations.delegate,
+                            GlobalMaterialLocalizations.delegate,
+                            GlobalWidgetsLocalizations.delegate,
+                            GlobalCupertinoLocalizations.delegate,
+                          ],
+                          localeResolutionCallback: (locale, supported) {
+                            if (locale == null) return const Locale('en');
+                            for (final supportedLocale in supported) {
+                              if (supportedLocale.languageCode ==
+                                  locale.languageCode) {
+                                return supportedLocale;
+                              }
+                            }
+                            return const Locale('en');
+                          },
+                          home: HomePage(controller: _homeController),
+                        );
+                      },
+                    ),
+                  ),
+                ),
               ),
             ),
           ),

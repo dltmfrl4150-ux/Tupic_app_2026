@@ -7,6 +7,7 @@ class PlaylistVideoItem {
     this.thumbnailUrl,
     this.publishedAt,
     this.playlistId,
+    this.channelTitle,
   });
 
   final String youtubeVideoId;
@@ -15,6 +16,7 @@ class PlaylistVideoItem {
   final String? thumbnailUrl;
   final DateTime? publishedAt;
   final String? playlistId;
+  final String? channelTitle;
 
   factory PlaylistVideoItem.fromJson(Map<String, dynamic> json) {
     final id = json['youtubeVideoId'] ?? json['videoId'];
@@ -38,6 +40,9 @@ class PlaylistVideoItem {
       playlistId: json['playlistId'] is String
           ? json['playlistId'] as String
           : null,
+      channelTitle: json['channelTitle'] is String
+          ? json['channelTitle'] as String
+          : null,
     );
   }
 
@@ -48,7 +53,47 @@ class PlaylistVideoItem {
     'thumbnailUrl': thumbnailUrl,
     'publishedAt': publishedAt?.toIso8601String(),
     'playlistId': playlistId,
+    'channelTitle': channelTitle,
   };
+}
+
+/// Resolved YouTube channel (uploads playlist) from the local proxy.
+class ResolvedYoutubeChannel {
+  const ResolvedYoutubeChannel({
+    required this.channelId,
+    required this.title,
+    required this.uploadsPlaylistId,
+    this.thumbnailUrl,
+    this.customUrl,
+  });
+
+  final String channelId;
+  final String title;
+  final String uploadsPlaylistId;
+  final String? thumbnailUrl;
+  final String? customUrl;
+
+  factory ResolvedYoutubeChannel.fromJson(Map<String, dynamic> json) {
+    final channelId = json['channelId'];
+    final title = json['title'];
+    final uploads = json['uploadsPlaylistId'];
+    if (channelId is! String ||
+        title is! String ||
+        uploads is! String ||
+        channelId.isEmpty ||
+        uploads.isEmpty) {
+      throw const FormatException('Invalid channel resolve payload');
+    }
+    return ResolvedYoutubeChannel(
+      channelId: channelId,
+      title: title,
+      uploadsPlaylistId: uploads,
+      thumbnailUrl: json['thumbnailUrl'] is String
+          ? json['thumbnailUrl'] as String
+          : null,
+      customUrl: json['customUrl'] is String ? json['customUrl'] as String : null,
+    );
+  }
 }
 
 class PlaylistFetchResult {
@@ -61,7 +106,11 @@ class PlaylistFetchResult {
     this.excludedPrivateDeleted = 0,
     this.excludedNotEmbeddable = 0,
     this.excludedMissing = 0,
+    this.excludedAgeRestricted = 0,
+    this.excludedVerificationFailed = 0,
     this.excludedVideoIds = const [],
+    this.ageRestrictedVideos = const [],
+    this.ageRestrictedIds = const [],
     this.fromCache = false,
   });
 
@@ -73,11 +122,20 @@ class PlaylistFetchResult {
   final int excludedPrivateDeleted;
   final int excludedNotEmbeddable;
   final int excludedMissing;
+  final int excludedAgeRestricted;
+  final int excludedVerificationFailed;
   final List<String> excludedVideoIds;
+  /// Age-restricted items classified by the proxy (not in [videos]).
+  final List<PlaylistVideoItem> ageRestrictedVideos;
+  final List<String> ageRestrictedIds;
   final bool fromCache;
 
   int get excludedUnplayableTotal =>
-      excludedPrivateDeleted + excludedNotEmbeddable + excludedMissing;
+      excludedPrivateDeleted +
+      excludedNotEmbeddable +
+      excludedMissing +
+      excludedAgeRestricted +
+      excludedVerificationFailed;
 
   factory PlaylistFetchResult.fromJson(Map<String, dynamic> json) {
     final playlistId = json['playlistId'];
@@ -106,6 +164,25 @@ class PlaylistFetchResult {
     final excludedVideoIds = excludedRaw is List
         ? excludedRaw.whereType<String>().toList(growable: false)
         : const <String>[];
+    final ageRestrictedVideos = <PlaylistVideoItem>[];
+    final ageRaw = json['ageRestrictedVideos'];
+    if (ageRaw is List) {
+      for (final item in ageRaw) {
+        if (item is Map) {
+          try {
+            ageRestrictedVideos.add(
+              PlaylistVideoItem.fromJson(Map<String, dynamic>.from(item)),
+            );
+          } catch (_) {}
+        }
+      }
+    }
+    final ageIdsRaw = json['ageRestrictedIds'];
+    final ageRestrictedIds = ageIdsRaw is List
+        ? ageIdsRaw.whereType<String>().toList(growable: false)
+        : ageRestrictedVideos
+            .map((v) => v.youtubeVideoId)
+            .toList(growable: false);
 
     return PlaylistFetchResult(
       playlistId: playlistId,
@@ -116,7 +193,11 @@ class PlaylistFetchResult {
       excludedPrivateDeleted: asInt(json['excludedPrivateDeleted']),
       excludedNotEmbeddable: asInt(json['excludedNotEmbeddable']),
       excludedMissing: asInt(json['excludedMissing']),
+      excludedAgeRestricted: asInt(json['excludedAgeRestricted']),
+      excludedVerificationFailed: asInt(json['excludedVerificationFailed']),
       excludedVideoIds: excludedVideoIds,
+      ageRestrictedVideos: ageRestrictedVideos,
+      ageRestrictedIds: ageRestrictedIds,
       fromCache: json['fromCache'] == true,
     );
   }
@@ -126,16 +207,39 @@ class VideoValidationResult {
   const VideoValidationResult({
     required this.playableIds,
     required this.unplayableIds,
+    this.playableVideos = const [],
+    this.ageRestrictedIds = const [],
+    this.ageRestrictedVideos = const [],
+    this.verificationFailedIds = const [],
     this.excludedPrivateDeleted = 0,
     this.excludedNotEmbeddable = 0,
     this.excludedMissing = 0,
+    this.excludedAgeRestricted = 0,
+    this.excludedVerificationFailed = 0,
   });
 
   final List<String> playableIds;
   final List<String> unplayableIds;
+  /// Titles/thumbnails from the same videos.list call (no extra quota).
+  final List<PlaylistVideoItem> playableVideos;
+  final List<String> ageRestrictedIds;
+  final List<PlaylistVideoItem> ageRestrictedVideos;
+  final List<String> verificationFailedIds;
   final int excludedPrivateDeleted;
   final int excludedNotEmbeddable;
   final int excludedMissing;
+  final int excludedAgeRestricted;
+  final int excludedVerificationFailed;
+
+  PlaylistVideoItem? metaFor(String youtubeVideoId) {
+    for (final item in playableVideos) {
+      if (item.youtubeVideoId == youtubeVideoId) return item;
+    }
+    for (final item in ageRestrictedVideos) {
+      if (item.youtubeVideoId == youtubeVideoId) return item;
+    }
+    return null;
+  }
 
   factory VideoValidationResult.fromJson(Map<String, dynamic> json) {
     int asInt(dynamic value) => value is int
@@ -144,12 +248,31 @@ class VideoValidationResult {
     List<String> asIds(dynamic raw) => raw is List
         ? raw.whereType<String>().toList(growable: false)
         : const <String>[];
+    List<PlaylistVideoItem> asVideos(dynamic raw) {
+      if (raw is! List) return const [];
+      final out = <PlaylistVideoItem>[];
+      for (final item in raw) {
+        if (item is Map) {
+          try {
+            out.add(PlaylistVideoItem.fromJson(Map<String, dynamic>.from(item)));
+          } catch (_) {}
+        }
+      }
+      return out;
+    }
+
     return VideoValidationResult(
       playableIds: asIds(json['playableIds']),
       unplayableIds: asIds(json['unplayableIds']),
+      playableVideos: asVideos(json['playableVideos']),
+      ageRestrictedIds: asIds(json['ageRestrictedIds']),
+      ageRestrictedVideos: asVideos(json['ageRestrictedVideos']),
+      verificationFailedIds: asIds(json['verificationFailedIds']),
       excludedPrivateDeleted: asInt(json['excludedPrivateDeleted']),
       excludedNotEmbeddable: asInt(json['excludedNotEmbeddable']),
       excludedMissing: asInt(json['excludedMissing']),
+      excludedAgeRestricted: asInt(json['excludedAgeRestricted']),
+      excludedVerificationFailed: asInt(json['excludedVerificationFailed']),
     );
   }
 }
@@ -167,6 +290,8 @@ class PlaylistImportReport {
     this.excludedPrivateDeleted = 0,
     this.excludedNotEmbeddable = 0,
     this.excludedMissing = 0,
+    this.excludedAgeRestricted = 0,
+    this.excludedVerificationFailed = 0,
     this.prunedUnplayableCount = 0,
   });
 
@@ -181,7 +306,27 @@ class PlaylistImportReport {
   final int excludedPrivateDeleted;
   final int excludedNotEmbeddable;
   final int excludedMissing;
+  final int excludedAgeRestricted;
+  final int excludedVerificationFailed;
   final int prunedUnplayableCount;
+}
+
+/// Single-video registration rejected because YouTube marks it age-restricted.
+class AgeRestrictedVideoException implements Exception {
+  const AgeRestrictedVideoException([this.youtubeVideoId]);
+  final String? youtubeVideoId;
+
+  @override
+  String toString() => 'AgeRestrictedVideoException($youtubeVideoId)';
+}
+
+/// Single-video registration rejected because playability could not be verified.
+class VideoVerificationFailedException implements Exception {
+  const VideoVerificationFailedException([this.youtubeVideoId]);
+  final String? youtubeVideoId;
+
+  @override
+  String toString() => 'VideoVerificationFailedException($youtubeVideoId)';
 }
 
 /// Defensive check for playlist placeholder titles (not a sole playability proof).

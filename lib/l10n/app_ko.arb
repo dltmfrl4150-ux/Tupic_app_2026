@@ -14,7 +14,106 @@
   "menuChannels": "채널 목록",
   "menuCreateChannel": "채널 만들기",
   "menuManageChannels": "채널 관리",
-  "menuImportSharedChannel": "공유 채널 가져오기",
+  "menuImportSharedChannel": "채널 탐색",
+  "exploreChannelsTitle": "채널 탐색",
+  "exploreBannerTitle": "채널 탐색",
+  "exploreBannerBody": "다른 사람들이 만든 채널을 만나보세요.",
+  "exploreBannerCta": "채널 둘러보기",
+  "homeExploreViewAll": "전체보기",
+  "homeExploreSearchEntry": "채널 또는 콘텐츠 검색",
+  "homeExploreCategoryPopular": "인기",
+  "homeExploreCategoryLatest": "최신",
+
+  "exploreSearchHint": "어떤 채널을 찾으세요?",
+  "exploreSearchPrefixHint": "채널 이름 앞부분으로 검색합니다. (대소문자 구분)",
+  "exploreSearchComingSoon": "검색은 준비 중이에요.",
+  "exploreCategoryComingSoon": "카테고리 필터는 준비 중이에요.",
+  "exploreRecommendedSection": "추천 채널",
+  "exploreLatestSection": "최신 채널",
+  "exploreEmptyTitle": "아직 공유된 채널이 없어요.",
+  "exploreEmptyBody": "첫 번째 채널을 공유해 보세요!",
+  "exploreLoadFailedTitle": "채널을 불러오지 못했어요.",
+  "exploreLoadFailedBody": "네트워크 상태를 확인한 뒤 다시 시도해 주세요.",
+  "exploreLoadMore": "더 보기",
+  "exploreShareMyChannel": "내 채널 공유하기",
+  "exploreShareComingSoon": "채널 공유 기능을 준비하고 있어요.",
+  "exploreNoLocalChannelsToShare": "공유할 채널이 없어요. 먼저 채널을 만들어 주세요.",
+  "sharePreviewTitle": "공유 채널",
+  "sharePreviewUnavailable": "이 공유 채널을 볼 수 없어요.",
+  "sharePreviewVideosSection": "공유된 영상",
+  "sharePreviewAddChannel": "채널 추가",
+  "sharePreviewAddVideos": "내 채널에 영상 추가",
+  "shareVersionLabel": "v{version}",
+  "@shareVersionLabel": {
+    "placeholders": {
+      "version": { "type": "int" }
+    }
+  },
+  "retry": "다시 시도",
+  "exploreCategoryAll": "전체",
+  "exploreCategoryKids": "키즈",
+  "exploreCategoryEducation": "교육",
+  "exploreCategoryMusic": "음악",
+  "exploreCategoryEntertainment": "엔터테인먼트",
+  "exploreCategoryGames": "게임",
+  "exploreCategorySports": "운동",
+  "exploreCategoryLifestyle": "라이프스타일",
+  "exploreCategoryOther": "기타",
+  "accountNicknameSuggestGoogle": "Google 이름을 후보로 넣었어요. 원하는 공개 닉네임으로 수정할 수 있습니다.",
+  "shareChannelTitle": "채널 공유하기",
+  "shareChannelAction": "채널 공유하기",
+  "shareAsNewVersionTitle": "새 버전으로 공유하기",
+  "shareAsNewVersionAction": "새 버전으로 공유하기",
+  "shareNewVersionHint": "기존 v{version}은 그대로 유지되고, 현재 채널이 v{next}로 새롭게 공유됩니다.",
+  "@shareNewVersionHint": {
+    "placeholders": {
+      "version": { "type": "int" },
+      "next": { "type": "int" }
+    }
+  },
+  "shareConfirmNewVersionCheckbox": "새 버전으로 공유하는 것을 확인했습니다",
+  "shareConfirmNewVersionRequired": "새 버전 공유를 확인하려면 체크해 주세요.",
+  "shareCategoryLabel": "카테고리",
+  "shareDescriptionLabel": "공유 설명 (선택)",
+  "shareDescriptionHint": "이 채널을 소개하는 짧은 설명을 적어 주세요",
+  "sharePublicNicknameLabel": "공개 닉네임: {nickname}",
+  "@sharePublicNicknameLabel": {
+    "placeholders": {
+      "nickname": { "type": "String" }
+    }
+  },
+  "shareNeedSignIn": "채널을 공유하려면 로그인해 주세요.",
+  "shareNeedNickname": "공유하려면 먼저 공개 닉네임을 설정해 주세요.",
+  "shareNoVideos": "공유할 영상이 없습니다. 영상을 추가한 뒤 다시 시도해 주세요.",
+  "shareTooManyVideos": "영상 수가 너무 많아 공유할 수 없습니다.",
+  "shareNonShareableSource": "공개 공유할 수 없는 콘텐츠가 포함되어 있습니다.",
+  "shareInvalidCategory": "카테고리를 선택해 주세요.",
+  "shareUnavailable": "공유 서비스를 사용할 수 없습니다. 잠시 후 다시 시도해 주세요.",
+  "sharePermissionDenied": "이 채널을 공유할 권한이 없습니다.",
+  "sharePublishFailed": "채널을 공유하지 못했습니다. 다시 시도해 주세요.",
+  "sharePublishSuccess": "채널이 v{version}으로 공유되었습니다.",
+  "@sharePublishSuccess": {
+    "placeholders": {
+      "version": { "type": "int" }
+    }
+  },
+  "mySharedChannelsTitle": "공유한 내 채널",
+  "mySharedChannelsEmpty": "아직 공유한 채널이 없습니다.",
+  "shareStatusPublished": "공개",
+  "shareStatusCancelled": "공유 취소됨",
+  "shareCancelAction": "공유 취소",
+  "shareCancelTitle": "이 버전 공유를 취소할까요?",
+  "shareCancelBody": "「{title}」 v{version} 공유가 목록에서 숨겨집니다. 이미 가져온 채널에는 영향을 주지 않습니다.",
+  "@shareCancelBody": {
+    "placeholders": {
+      "title": { "type": "String" },
+      "version": { "type": "int" }
+    }
+  },
+  "shareCancelConfirm": "공유 취소",
+  "shareCancelSuccess": "해당 버전 공유를 취소했습니다.",
+  "shareCancelFailed": "공유를 취소하지 못했습니다.",
+
   "menuSettings": "설정",
   "menuMyAccount": "내 계정",
   "menuPremiumHint": "Premium 요금제는 이후 단계에서 안내됩니다.",
@@ -71,10 +170,29 @@
   "accountSignInFailed": "로그인에 실패했습니다. 다시 시도해 주세요.",
   "accountSignInBusy": "로그인이 이미 진행 중입니다.",
   "accountSignInNetworkError": "네트워크 오류입니다. 연결을 확인한 뒤 다시 시도해 주세요.",
-  "accountSignInUnavailable": "이 빌드에서는 Google 로그인을 사용할 수 없습니다. Android Firebase 빌드에서 이용해 주세요.",
+  "accountSignInUnavailable": "이 환경에서는 Google 로그인을 사용할 수 없습니다. Android 또는 Chrome(웹) Firebase 빌드에서 이용해 주세요.",
+  "accountSignInPopupBlocked": "로그인 팝업이 차단되었습니다. 브라우저에서 팝업을 허용한 뒤 다시 시도해 주세요.",
+  "accountSignInUnauthorizedDomain": "이 웹 도메인은 Firebase Authentication에 허용되지 않았습니다.",
   "accountConsentRequired": "서비스 이용을 위해 필수 약관에 동의해 주세요.",
   "accountAnonymousName": "Google 사용자",
   "accountLocalDataNote": "로컬에 저장된 채널·영상·이어보기는 이 Google 계정 소유로 표시되거나 자동 업로드되지 않습니다.",
+  "accountGoogleSectionTitle": "Google 계정",
+  "accountPublicNicknameSectionTitle": "공개 닉네임",
+  "accountPublicNicknameHint": "공유 채널에 표시되는 이름입니다. Google 이름·이메일과 별개입니다.",
+  "accountPublicNicknameEmpty": "아직 공개 닉네임이 없습니다.",
+  "accountPublicNicknameLabel": "공개 닉네임",
+  "accountSetNickname": "닉네임 설정",
+  "accountChangeNickname": "닉네임 변경",
+  "accountNicknameDialogTitle": "공개 닉네임",
+  "accountNicknameSaveSuccess": "공개 닉네임이 저장되었습니다.",
+  "accountNicknameUnavailable": "공개 프로필 저장소를 사용할 수 없습니다. Firebase Console에서 Cloud Firestore를 활성화한 뒤 다시 시도해 주세요.",
+  "accountNicknameNotSignedIn": "공개 닉네임을 저장하려면 로그인해 주세요.",
+  "accountNicknamePermissionDenied": "이 프로필을 수정할 권한이 없습니다.",
+  "accountNicknameSaveFailed": "닉네임을 저장하지 못했습니다. 다시 시도해 주세요.",
+  "accountNicknameInvalidEmpty": "닉네임을 입력해 주세요.",
+  "accountNicknameInvalidLength": "닉네임은 2~20자로 입력해 주세요.",
+  "accountNicknameInvalidChars": "사용할 수 없는 문자입니다. 이메일 형식(@)은 사용할 수 없습니다.",
+  "accountNicknameInappropriate": "사용할 수 없는 닉네임입니다.",
   "accountUnder14Policy": "만 14세 미만의 독립 계정 가입은 법정대리인 동의 확인 절차가 준비되기 전까지 허용하지 않는 정책입니다. Google 계정만으로 연령이 확인되었다고 보지 않으며, 현재 단계에서 신뢰할 수 있는 연령 인증은 제공하지 않습니다.",
   "createChannelDialogTitle": "채널 만들기",
   "createChannelNameHint": "채널 이름",
@@ -89,6 +207,7 @@
   "selectAudienceGeneral": "일반 콘텐츠",
   "back": "뒤로",
   "premiumTitle": "Premium",
+  "premiumDeveloperTestBadge": "Premium (개발 테스트)",
   "premiumBody": "더 많은 채널, 높은 한도, 자동 동기화. 결제는 아직 활성화되지 않았습니다.",
   "premiumLimitTitle": "무료 플랜 채널 제한",
   "premiumLimitBody": "무료 플랜에서는 채널을 최대 {count}개까지 만들 수 있습니다. 더 많은 채널은 Premium에서 제공됩니다.",
@@ -103,10 +222,14 @@
   "channelDetailTitle": "채널",
   "channelNotFound": "이 채널을 찾을 수 없습니다.",
   "manageThisChannel": "채널 관리",
+  "channelSettingsTooltip": "채널 설정",
   "channelVideosComingSoon": "YouTube 영상 추가는 다음 단계에서 제공됩니다.",
   "playOrderLabel": "재생 순서",
-  "playOrderSequential": "순차",
-  "playOrderShuffle": "무작위",
+  "playOrderTitleAsc": "오름차순",
+  "playOrderTitleDesc": "내림차순",
+  "playOrderNewestAdded": "최신순",
+  "playOrderOldestAdded": "오래된순",
+  "playOrderShuffle": "랜덤",
   "channelTypeLabel": "채널 유형",
   "registeredVideosLabel": "등록 영상",
   "channelRenamed": "채널 이름이 변경되었습니다.",
@@ -121,18 +244,47 @@
     }
   },
   "parentalGateTitle": "보호자 확인",
-  "parentalGateBody": "키즈용 채널 관리로 이동하려면 출생연도를 입력해 주세요.",
+  "parentalGateBody": "키즈 채널 재생 중 일반 채널로 전환하려면 출생연도를 입력해 주세요.",
   "parentalGateHint": "YYYY",
   "parentalGateContinue": "계속",
   "parentalGateInvalidYear": "출생연도 4자리를 올바르게 입력해 주세요.",
   "parentalGateDenied": "18세 이상만 이용할 수 있습니다.",
-  "parentalGateDisclaimer": "법적 성인 인증이 아닌 간단한 접근 제한입니다.",
+  "parentalGateDisclaimer": "법적 성인 인증이 아닌 간단한 접근 제한입니다. 출생연도는 저장되지 않습니다.",
   "importSharedPlaceholder": "공유 채널 가져오기는 이후 단계에서 제공됩니다.",
   "addContentTitle": "콘텐츠 추가",
   "manageContentTitle": "콘텐츠 관리",
   "addContentUrlHint": "YouTube 링크를 붙여넣으세요",
+  "openYoutubeTooltip": "YouTube 열기",
+  "openYoutubeFailed": "YouTube를 열 수 없습니다.",
   "paste": "붙여넣기",
   "analyzeUrl": "분석",
+  "confirmContent": "콘텐츠 확인",
+  "addSingleVideo": "영상 추가",
+  "addSelectedVideos": "선택한 영상 추가",
+  "checkNewVideos": "새 영상 확인",
+  "contentNothingSelected": "추가할 영상을 선택해 주세요.",
+  "contentImportSuccess": "영상 {count}개를 추가했습니다.",
+  "@contentImportSuccess": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "contentImportPartial": "영상 {imported}개를 추가했습니다. 한도로 인해 {omitted}개는 제외되었습니다.",
+  "@contentImportPartial": {
+    "placeholders": {
+      "imported": { "type": "int" },
+      "omitted": { "type": "int" }
+    }
+  },
+  "contentCreatorResolveFailed": "유튜버 채널을 확인할 수 없습니다. 링크를 확인해 주세요.",
+  "previewSortTitleAsc": "이름 오름차순",
+  "previewSortTitleDesc": "이름 내림차순",
+  "previewSortNewest": "최신순",
+  "previewSortOldest": "오래된순",
+  "selectAllVideos": "전체 선택",
+  "clearVideoSelection": "선택 해제",
+  "loadMoreVideos": "더 불러오기",
+  "noNewCreatorVideos": "새로 추가할 영상이 없습니다.",
   "registerContent": "등록",
   "displayNameHint": "표시 이름",
   "contentTypeVideo": "개별 영상",
@@ -202,6 +354,17 @@
       "pruned": { "type": "int" }
     }
   },
+  "contentAgeRestrictedBlocked": "YouTube 연령 제한 영상은 추가할 수 없습니다.",
+  "contentVideoVerificationFailed": "영상 정보를 확인할 수 없습니다. 잠시 후 다시 시도해 주세요.",
+  "contentProxyConnectionFailed": "영상 확인 서버에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.",
+  "contentProxyQuotaExceeded": "영상 확인 요청 한도에 도달했습니다.",
+  "contentProxyVerifyFailed": "영상 정보를 확인할 수 없습니다.",
+  "playlistAgeRestrictedExcluded": "연령 제한 영상 {count}개를 제외했습니다.",
+  "@playlistAgeRestrictedExcluded": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "localServerRequired": "로컬 YouTube 서버가 필요합니다. server 폴더에서 npm start를 실행하세요.",
   "localApiKeyRequired": "로컬 서버에 YOUTUBE_API_KEY가 설정되지 않았습니다. server/.env를 확인하세요.",
   "quotaExceededMessage": "YouTube API 할당량이 초과되었습니다. 잠시 후 다시 시도하세요.",
@@ -263,6 +426,18 @@
   },
   "excludeVideo": "재생에서 제외",
   "restoreVideo": "재생에 복원",
+  "editVideoTitle": "제목 수정",
+  "editVideoTitleTitle": "영상 제목 수정",
+  "editVideoTitleLabel": "표시 제목",
+  "restoreOriginalTitle": "원본 제목으로 복원",
+  "originalVideoTitleHint": "원본: {title}",
+  "@originalVideoTitleHint": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "videoExcluded": "제외됨",
   "reorderHint": "길게 눌러 드래그하면 영상 순서를 바꿀 수 있습니다.",
   "playerPause": "일시정지",

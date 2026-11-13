@@ -5,23 +5,21 @@ import '../../../core/widgets/async_state_views.dart';
 import '../../../core/widgets/coming_soon_dialog.dart';
 import '../../../core/widgets/section_header.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../shared/models/content_category.dart';
 import '../../../shared/models/home_feed.dart';
 import '../../../shared/models/tupic_channel.dart';
 import '../../../shared/models/video_item.dart';
-import '../../../core/widgets/placeholder_feature_page.dart';
 import '../../account/presentation/account_page.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../channels/presentation/channel_detail_page.dart';
-import '../../channels/presentation/channel_manage_list_page.dart';
 import '../../channels/presentation/channels_controller.dart';
 import '../../channels/presentation/create_channel_dialog.dart';
+import '../../explore/presentation/channel_explore_page.dart';
 import '../../player/presentation/player_launcher.dart';
 import '../../settings/presentation/settings_page.dart';
 import 'home_controller.dart';
 import 'widgets/app_end_drawer.dart';
-import 'widgets/category_chips.dart';
 import 'widgets/channel_card.dart';
+import 'widgets/home_explore_section.dart';
 import 'widgets/horizontal_rail.dart';
 import 'widgets/space_hero_illustration.dart';
 import 'widgets/video_card.dart';
@@ -75,6 +73,14 @@ class _HomePageState extends State<HomePage> {
     await startChannelPlayback(context, channel: channel);
   }
 
+  void _openChannelExplore() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const ChannelExplorePage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -86,24 +92,7 @@ class _HomePageState extends State<HomePage> {
         onOpenChannel: _openChannel,
         onPlayChannel: _playChannel,
         onCreateChannel: () => showCreateChannelDialog(context),
-        onManageChannels: () {
-          Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (_) => const ChannelManageListPage(),
-            ),
-          );
-        },
-        onImportShared: () {
-          final l10n = AppLocalizations.of(context);
-          Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (_) => PlaceholderFeaturePage(
-                title: l10n.menuImportSharedChannel,
-                body: l10n.importSharedPlaceholder,
-              ),
-            ),
-          );
-        },
+        onExploreChannels: _openChannelExplore,
         onOpenSettings: () {
           Navigator.of(context).push(
             MaterialPageRoute<void>(
@@ -134,26 +123,22 @@ class _HomePageState extends State<HomePage> {
                   isMock: isMock,
                   channels: _channels,
                   recommended: const [],
-                  explore: const [],
-                  selectedCategory: controller.selectedCategory,
-                  onCategorySelected: controller.selectCategory,
                   showAudiencePicker: true,
                   onAudienceSelected: controller.setAudience,
                   onOpenChannel: _openChannel,
                   onPlayChannel: _playChannel,
+                  onExploreChannels: _openChannelExplore,
                 ),
               HomeFeedReady(:final feed) => _HomeScrollBody(
                 userDisplayName: feed.userDisplayName,
                 isMock: feed.isMock,
                 channels: feed.channels,
                 recommended: feed.recommended,
-                explore: feed.exploreByCategory(controller.selectedCategory),
-                selectedCategory: controller.selectedCategory,
-                onCategorySelected: controller.selectCategory,
                 showAudiencePicker: feed.lastAudience == null,
                 onAudienceSelected: controller.setAudience,
                 onOpenChannel: _openChannel,
                 onPlayChannel: _playChannel,
+                onExploreChannels: _openChannelExplore,
               ),
             },
           ),
@@ -183,26 +168,22 @@ class _HomeScrollBody extends StatelessWidget {
     required this.isMock,
     required this.channels,
     required this.recommended,
-    required this.explore,
-    required this.selectedCategory,
-    required this.onCategorySelected,
     required this.showAudiencePicker,
     required this.onAudienceSelected,
     required this.onOpenChannel,
     required this.onPlayChannel,
+    required this.onExploreChannels,
   });
 
   final String userDisplayName;
   final bool isMock;
   final List<TupicChannel> channels;
   final List<VideoItem> recommended;
-  final List<VideoItem> explore;
-  final ContentCategory selectedCategory;
-  final ValueChanged<ContentCategory> onCategorySelected;
   final bool showAudiencePicker;
   final ValueChanged<AudiencePreference> onAudienceSelected;
   final ValueChanged<TupicChannel> onOpenChannel;
   final ValueChanged<TupicChannel> onPlayChannel;
+  final VoidCallback onExploreChannels;
 
   @override
   Widget build(BuildContext context) {
@@ -215,7 +196,8 @@ class _HomeScrollBody extends StatelessWidget {
         ? 148.0
         : 160.0;
     final channelCardWidth = width < 480 ? 168.0 : 196.0;
-    final channelRailHeight = width < 480 ? 248.0 : 268.0;
+    // ~22% shorter than prior 248/268 while keeping play tap target ≥40.
+    final channelRailHeight = width < 480 ? 192.0 : 208.0;
     final videoCardWidth = width < 480 ? 150.0 : 176.0;
     final videoRailHeight = width < 480 ? 176.0 : 196.0;
     final contentMaxWidth = width >= 1100 ? 1080.0 : double.infinity;
@@ -279,7 +261,7 @@ class _HomeScrollBody extends StatelessWidget {
           SliverToBoxAdapter(
             child: feed(
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
                 child: _AudiencePicker(onSelected: onAudienceSelected),
               ),
             ),
@@ -302,7 +284,7 @@ class _HomeScrollBody extends StatelessWidget {
                         ),
                         const SizedBox(height: 12),
                         SizedBox(
-                          height: channelRailHeight * 0.72,
+                          height: channelRailHeight * 0.85,
                           child: CreateChannelCard(
                             width: channelCardWidth,
                             onTap: () => showCreateChannelDialog(context),
@@ -332,7 +314,7 @@ class _HomeScrollBody extends StatelessWidget {
                   ),
           ),
         ),
-        const SliverToBoxAdapter(child: SizedBox(height: 20)),
+        const SliverToBoxAdapter(child: SizedBox(height: 16)),
         SliverToBoxAdapter(
           child: feed(SectionHeader(title: l10n.recommended)),
         ),
@@ -360,41 +342,13 @@ class _HomeScrollBody extends StatelessWidget {
                   ),
           ),
         ),
-        const SliverToBoxAdapter(child: SizedBox(height: 20)),
-        SliverToBoxAdapter(
-          child: feed(SectionHeader(title: l10n.exploreMyContent)),
-        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 16)),
         SliverToBoxAdapter(
           child: feed(
-            CategoryChips(
-              selected: selectedCategory,
-              onSelected: onCategorySelected,
+            HomeExploreSection(
+              onOpenExplore: onExploreChannels,
+              onOpenSearch: onExploreChannels,
             ),
-          ),
-        ),
-        const SliverToBoxAdapter(child: SizedBox(height: 12)),
-        SliverToBoxAdapter(
-          child: feed(
-            explore.isEmpty
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: EmptySection(
-                      title: l10n.emptyExploreTitle,
-                      body: l10n.emptyExploreBody,
-                      icon: Icons.category_outlined,
-                    ),
-                  )
-                : HorizontalRail(
-                    height: videoRailHeight,
-                    itemCount: explore.length,
-                    itemBuilder: (context, index) {
-                      return VideoCard(
-                        video: explore[index],
-                        width: videoCardWidth,
-                        onTap: () => showComingSoonDialog(context),
-                      );
-                    },
-                  ),
           ),
         ),
         const SliverToBoxAdapter(child: SizedBox(height: 40)),

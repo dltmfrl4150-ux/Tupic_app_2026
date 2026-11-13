@@ -111,7 +111,7 @@ void main() {
     final queue = builder.build(
       sources: sources,
       videos: videos,
-      playOrder: PlayOrder.sequential,
+      playOrder: PlayOrder.oldestAdded,
     );
     expect(queue.map((v) => v.youtubeVideoId), ['bbbbbbbbbbb']);
   });

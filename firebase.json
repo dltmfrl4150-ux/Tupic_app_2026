@@ -1,1 +1,27 @@
-{"flutter":{"platforms":{"android":{"buildConfigurations":{".":{"projectId":"tupic-project","appId":"1:396875776930:android:6d0a510fa61b906d3fa8fb","fileOutput":"android/app/google-services.json"}}},"dart":{"lib/firebase_options.dart":{"projectId":"tupic-project","configurations":{"android":"1:396875776930:android:6d0a510fa61b906d3fa8fb"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "buildConfigurations": {
+          ".": {
+            "projectId": "tupic-project",
+            "appId": "1:396875776930:android:6d0a510fa61b906d3fa8fb",
+            "fileOutput": "android/app/google-services.json"
+          }
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "tupic-project",
+          "configurations": {
+            "android": "1:396875776930:android:6d0a510fa61b906d3fa8fb"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  }
+}

@@ -14,7 +14,106 @@
   "menuChannels": "Channels",
   "menuCreateChannel": "Create channel",
   "menuManageChannels": "Manage channels",
-  "menuImportSharedChannel": "Import shared channel",
+  "menuImportSharedChannel": "Explore channels",
+  "exploreChannelsTitle": "Explore channels",
+  "exploreBannerTitle": "Explore channels",
+  "exploreBannerBody": "Discover channels made by other people.",
+  "exploreBannerCta": "Browse channels",
+  "homeExploreViewAll": "See all",
+  "homeExploreSearchEntry": "Search channels or content",
+  "homeExploreCategoryPopular": "Popular",
+  "homeExploreCategoryLatest": "Latest",
+
+  "exploreSearchHint": "What channel are you looking for?",
+  "exploreSearchPrefixHint": "Prefix search on channel title (case-sensitive).",
+  "exploreSearchComingSoon": "Search is coming soon.",
+  "exploreCategoryComingSoon": "Category filters are coming soon.",
+  "exploreRecommendedSection": "Recommended channels",
+  "exploreLatestSection": "Latest channels",
+  "exploreEmptyTitle": "No shared channels yet.",
+  "exploreEmptyBody": "Be the first to share a channel!",
+  "exploreLoadFailedTitle": "Could not load shared channels.",
+  "exploreLoadFailedBody": "Check your connection and try again.",
+  "exploreLoadMore": "Load more",
+  "exploreShareMyChannel": "Share my channel",
+  "exploreShareComingSoon": "Channel sharing is on the way.",
+  "exploreNoLocalChannelsToShare": "You have no channels to share yet. Create a channel first.",
+  "sharePreviewTitle": "Shared channel",
+  "sharePreviewUnavailable": "This shared channel is unavailable.",
+  "sharePreviewVideosSection": "Shared videos",
+  "sharePreviewAddChannel": "Add channel",
+  "sharePreviewAddVideos": "Add videos to my channel",
+  "shareVersionLabel": "v{version}",
+  "@shareVersionLabel": {
+    "placeholders": {
+      "version": { "type": "int" }
+    }
+  },
+  "retry": "Retry",
+  "exploreCategoryAll": "All",
+  "exploreCategoryKids": "Kids",
+  "exploreCategoryEducation": "Education",
+  "exploreCategoryMusic": "Music",
+  "exploreCategoryEntertainment": "Entertainment",
+  "exploreCategoryGames": "Games",
+  "exploreCategorySports": "Sports",
+  "exploreCategoryLifestyle": "Lifestyle",
+  "exploreCategoryOther": "Other",
+  "accountNicknameSuggestGoogle": "We suggested your Google name. You can edit it to any public nickname you prefer.",
+  "shareChannelTitle": "Share channel",
+  "shareChannelAction": "Share channel",
+  "shareAsNewVersionTitle": "Share as new version",
+  "shareAsNewVersionAction": "Share as new version",
+  "shareNewVersionHint": "Existing v{version} stays available, and the current channel will be shared as v{next}.",
+  "@shareNewVersionHint": {
+    "placeholders": {
+      "version": { "type": "int" },
+      "next": { "type": "int" }
+    }
+  },
+  "shareConfirmNewVersionCheckbox": "I confirm sharing as a new version",
+  "shareConfirmNewVersionRequired": "Check the box to confirm sharing a new version.",
+  "shareCategoryLabel": "Category",
+  "shareDescriptionLabel": "Description (optional)",
+  "shareDescriptionHint": "Add a short description for this channel",
+  "sharePublicNicknameLabel": "Public nickname: {nickname}",
+  "@sharePublicNicknameLabel": {
+    "placeholders": {
+      "nickname": { "type": "String" }
+    }
+  },
+  "shareNeedSignIn": "Sign in to share a channel.",
+  "shareNeedNickname": "Set a public nickname before sharing.",
+  "shareNoVideos": "There are no videos to share. Add videos and try again.",
+  "shareTooManyVideos": "This channel has too many videos to share.",
+  "shareNonShareableSource": "This channel includes content that cannot be shared publicly.",
+  "shareInvalidCategory": "Please choose a category.",
+  "shareUnavailable": "Sharing is unavailable right now. Try again later.",
+  "sharePermissionDenied": "You do not have permission to share this channel.",
+  "sharePublishFailed": "Could not share the channel. Please try again.",
+  "sharePublishSuccess": "Channel shared as v{version}.",
+  "@sharePublishSuccess": {
+    "placeholders": {
+      "version": { "type": "int" }
+    }
+  },
+  "mySharedChannelsTitle": "My shared channels",
+  "mySharedChannelsEmpty": "You have not shared any channels yet.",
+  "shareStatusPublished": "Published",
+  "shareStatusCancelled": "Cancelled",
+  "shareCancelAction": "Cancel share",
+  "shareCancelTitle": "Cancel this version?",
+  "shareCancelBody": "「{title}」 v{version} will be hidden from discovery. Channels others already imported are not affected.",
+  "@shareCancelBody": {
+    "placeholders": {
+      "title": { "type": "String" },
+      "version": { "type": "int" }
+    }
+  },
+  "shareCancelConfirm": "Cancel share",
+  "shareCancelSuccess": "This version is no longer shared.",
+  "shareCancelFailed": "Could not cancel sharing.",
+
   "menuSettings": "Settings",
   "menuMyAccount": "My account",
   "menuPremiumHint": "Premium plans arrive in a later update.",
@@ -71,10 +170,29 @@
   "accountSignInFailed": "Sign-in failed. Please try again.",
   "accountSignInBusy": "Sign-in is already in progress.",
   "accountSignInNetworkError": "Network error. Check your connection and try again.",
-  "accountSignInUnavailable": "Google sign-in is unavailable in this build. Use the Android Firebase build.",
+  "accountSignInUnavailable": "Google sign-in is unavailable here. Use the Android or Chrome (web) Firebase build.",
+  "accountSignInPopupBlocked": "The sign-in popup was blocked. Allow popups for this site and try again.",
+  "accountSignInUnauthorizedDomain": "This web domain is not authorized in Firebase Authentication.",
   "accountConsentRequired": "Please accept the required terms to continue.",
   "accountAnonymousName": "Google user",
   "accountLocalDataNote": "Local channels, videos, and resume data are not shown as owned by this Google account and are not uploaded automatically.",
+  "accountGoogleSectionTitle": "Google account",
+  "accountPublicNicknameSectionTitle": "Public nickname",
+  "accountPublicNicknameHint": "Shown on shared channels. Separate from your Google name and email.",
+  "accountPublicNicknameEmpty": "No public nickname yet.",
+  "accountPublicNicknameLabel": "Public nickname",
+  "accountSetNickname": "Set nickname",
+  "accountChangeNickname": "Change nickname",
+  "accountNicknameDialogTitle": "Public nickname",
+  "accountNicknameSaveSuccess": "Public nickname saved.",
+  "accountNicknameUnavailable": "Public profiles are unavailable. Enable Cloud Firestore in the Firebase Console, then try again.",
+  "accountNicknameNotSignedIn": "Sign in to save a public nickname.",
+  "accountNicknamePermissionDenied": "You do not have permission to edit this profile.",
+  "accountNicknameSaveFailed": "Could not save the nickname. Please try again.",
+  "accountNicknameInvalidEmpty": "Enter a nickname.",
+  "accountNicknameInvalidLength": "Nicknames must be 2–20 characters.",
+  "accountNicknameInvalidChars": "Invalid characters. Email-style names (@) are not allowed.",
+  "accountNicknameInappropriate": "This nickname is not allowed.",
   "accountUnder14Policy": "Independent accounts for users under 14 are not allowed until a lawful parental-consent process is ready. A Google account alone is not age verification, and this build does not provide reliable age verification.",
   "createChannelDialogTitle": "Create channel",
   "createChannelNameHint": "Channel name",
@@ -89,6 +207,7 @@
   "selectAudienceGeneral": "General content",
   "back": "Back",
   "premiumTitle": "Premium",
+  "premiumDeveloperTestBadge": "Premium (Developer Test)",
   "premiumBody": "More channels, higher limits, and auto-sync. Billing is not enabled yet.",
   "premiumLimitTitle": "Free plan channel limit",
   "premiumLimitBody": "The free plan allows up to {count} channel. Upgrade to Premium for more channels.",
@@ -103,9 +222,13 @@
   "channelDetailTitle": "Channel",
   "channelNotFound": "This channel is no longer available.",
   "manageThisChannel": "Manage channel",
+  "channelSettingsTooltip": "Channel settings",
   "channelVideosComingSoon": "Adding YouTube videos will be available in the next step.",
   "playOrderLabel": "Playback order",
-  "playOrderSequential": "Sequential",
+  "playOrderTitleAsc": "A–Z",
+  "playOrderTitleDesc": "Z–A",
+  "playOrderNewestAdded": "Newest added",
+  "playOrderOldestAdded": "Oldest added",
   "playOrderShuffle": "Shuffle",
   "channelTypeLabel": "Channel type",
   "registeredVideosLabel": "Registered videos",
@@ -121,18 +244,47 @@
     }
   },
   "parentalGateTitle": "Parent check",
-  "parentalGateBody": "Enter your birth year to continue to kids channel management.",
+  "parentalGateBody": "Enter your birth year to switch from a kids channel to a general channel during playback.",
   "parentalGateHint": "YYYY",
   "parentalGateContinue": "Continue",
   "parentalGateInvalidYear": "Enter a valid 4-digit birth year.",
   "parentalGateDenied": "Access is limited to ages 18 and over.",
-  "parentalGateDisclaimer": "This is a simple access check, not legal age verification.",
+  "parentalGateDisclaimer": "This is a simple access check, not legal age verification. Birth year is not stored.",
   "importSharedPlaceholder": "Importing a shared TUPIC channel will be available in a later update.",
   "addContentTitle": "Add content",
   "manageContentTitle": "Manage content",
   "addContentUrlHint": "Paste a YouTube link",
+  "openYoutubeTooltip": "Open YouTube",
+  "openYoutubeFailed": "Unable to open YouTube.",
   "paste": "Paste",
   "analyzeUrl": "Analyze",
+  "confirmContent": "Check content",
+  "addSingleVideo": "Add video",
+  "addSelectedVideos": "Add selected videos",
+  "checkNewVideos": "Check for new videos",
+  "contentNothingSelected": "Select at least one video to add.",
+  "contentImportSuccess": "Added {count} video(s).",
+  "@contentImportSuccess": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "contentImportPartial": "Added {imported} video(s). {omitted} were skipped due to the limit.",
+  "@contentImportPartial": {
+    "placeholders": {
+      "imported": { "type": "int" },
+      "omitted": { "type": "int" }
+    }
+  },
+  "contentCreatorResolveFailed": "Could not find this creator channel. Check the link.",
+  "previewSortTitleAsc": "Title A–Z",
+  "previewSortTitleDesc": "Title Z–A",
+  "previewSortNewest": "Newest uploads",
+  "previewSortOldest": "Oldest uploads",
+  "selectAllVideos": "Select all",
+  "clearVideoSelection": "Clear selection",
+  "loadMoreVideos": "Load more",
+  "noNewCreatorVideos": "No new videos to add.",
   "registerContent": "Register",
   "displayNameHint": "Display name",
   "contentTypeVideo": "Video",
@@ -202,6 +354,17 @@
       "pruned": { "type": "int" }
     }
   },
+  "contentAgeRestrictedBlocked": "Age-restricted YouTube videos cannot be added.",
+  "contentVideoVerificationFailed": "Unable to verify this video. Please try again later.",
+  "contentProxyConnectionFailed": "Unable to reach the video verification server. Please try again later.",
+  "contentProxyQuotaExceeded": "The video verification request limit has been reached.",
+  "contentProxyVerifyFailed": "Unable to verify this video.",
+  "playlistAgeRestrictedExcluded": "Excluded {count} age-restricted videos.",
+  "@playlistAgeRestrictedExcluded": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "localServerRequired": "Local YouTube server required. Run npm start in the server folder.",
   "localApiKeyRequired": "YOUTUBE_API_KEY is not set on the local server. Check server/.env.",
   "quotaExceededMessage": "YouTube API quota exceeded. Try again later.",
@@ -263,6 +426,18 @@
   },
   "excludeVideo": "Exclude from playback",
   "restoreVideo": "Restore to playback",
+  "editVideoTitle": "Edit title",
+  "editVideoTitleTitle": "Edit video title",
+  "editVideoTitleLabel": "Display title",
+  "restoreOriginalTitle": "Restore original title",
+  "originalVideoTitleHint": "Original: {title}",
+  "@originalVideoTitleHint": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "videoExcluded": "Excluded",
   "reorderHint": "Long-press and drag to change video order.",
   "playerPause": "Pause",

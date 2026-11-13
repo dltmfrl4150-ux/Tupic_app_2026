@@ -4,9 +4,11 @@ const path = require('path');
 const express = require('express');
 const dotenv = require('dotenv');
 const { DailyQuotaGuard } = require('./quota');
+const { applyLocalDevCors } = require('./cors');
 const {
   fetchPlaylistVideos,
   validatePlayableVideos,
+  resolveChannel,
   isValidVideoId,
   clearCache,
 } = require('./youtube');
@@ -33,6 +35,7 @@ const app = express();
 const quotaGuard = new DailyQuotaGuard({ maxRequests: MAX_DAILY });
 
 app.disable('x-powered-by');
+app.use(applyLocalDevCors);
 app.use(express.json({ limit: '64kb' }));
 
 function publicError(err) {
@@ -102,13 +105,60 @@ app.post('/api/youtube/videos/validate', async (req, res) => {
     const playableIds = validated.playable.map((v) => v.youtubeVideoId);
     const playableSet = new Set(playableIds);
     const unplayableIds = ids.filter((id) => !playableSet.has(id));
+    // Expose titles already fetched via videos.list (no extra quota).
+    const mapVideo = (v) => ({
+      youtubeVideoId: v.youtubeVideoId,
+      title: v.title,
+      thumbnailUrl: v.thumbnailUrl || null,
+      channelTitle: v.channelTitle || null,
+    });
     res.json({
       playableIds,
+      playableVideos: validated.playable.map(mapVideo),
       unplayableIds,
+      ageRestrictedIds: validated.ageRestrictedIds,
+      ageRestrictedVideos: validated.ageRestricted.map(mapVideo),
+      verificationFailedIds: validated.verificationFailedIds,
       excludedPrivateDeleted: validated.excludedPrivateDeleted,
       excludedNotEmbeddable: validated.excludedNotEmbeddable,
       excludedMissing: validated.excludedMissing,
+      excludedAgeRestricted: validated.excludedAgeRestricted,
+      excludedVerificationFailed: validated.excludedVerificationFailed,
     });
+  } catch (err) {
+    const { status, body } = publicError(err);
+    res.status(status).json(body);
+  }
+});
+
+/**
+ * Resolves a creator channel to uploads playlist (channels.list only).
+ * Query: channelId | handle | username | customName
+ */
+app.get('/api/youtube/channels/resolve', async (req, res) => {
+  const apiKey = process.env.YOUTUBE_API_KEY;
+  if (!apiKey || !String(apiKey).trim()) {
+    res.status(503).json({
+      error: {
+        code: 'missing_api_key',
+        message:
+          'YOUTUBE_API_KEY is not set. Copy server/.env.example to server/.env and set the key locally. Do not commit .env.',
+      },
+    });
+    return;
+  }
+
+  try {
+    const resolved = await resolveChannel({
+      apiKey: String(apiKey).trim(),
+      channelId: req.query.channelId,
+      handle: req.query.handle,
+      username: req.query.username,
+      customName: req.query.customName,
+      quotaGuard,
+      fetchImpl: fetch,
+    });
+    res.json(resolved);
   } catch (err) {
     const { status, body } = publicError(err);
     res.status(status).json(body);
@@ -176,4 +226,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { app, quotaGuard };
+module.exports = { app, quotaGuard, applyLocalDevCors };

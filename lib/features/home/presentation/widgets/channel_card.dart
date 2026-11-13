@@ -67,7 +67,7 @@ class ChannelCard extends StatelessWidget {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.all(14),
+                            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -78,7 +78,8 @@ class ChannelCard extends StatelessWidget {
                                   style: TextStyle(
                                     color: Colors.white.withValues(alpha: 0.8),
                                     fontWeight: FontWeight.w700,
-                                    letterSpacing: 1.2,
+                                    letterSpacing: 1.1,
+                                    fontSize: 13,
                                   ),
                                 ),
                               ],
@@ -91,7 +92,7 @@ class ChannelCard extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+                padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -106,31 +107,34 @@ class ChannelCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                               fontWeight: FontWeight.w600,
-                              fontSize: 15,
+                              fontSize: 14,
                               color: TupicColors.primaryText,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 2),
                           Text(
                             l10n.videoCount(channel.videoCount),
                             style: const TextStyle(
                               color: TupicColors.mutedText,
-                              fontSize: 12,
+                              fontSize: 11.5,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
                     SizedBox(
                       width: double.infinity,
+                      height: 40,
                       child: ElevatedButton.icon(
                         key: Key('channel_card_play_${channel.id}'),
                         onPressed: onPlay,
                         icon: const Icon(Icons.play_arrow_rounded, size: 18),
                         label: Text(l10n.playChannel),
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          padding: const EdgeInsets.symmetric(vertical: 0),
+                          minimumSize: const Size(0, 40),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           textStyle: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                       ),
@@ -179,8 +183,8 @@ class CreateChannelCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  width: 52,
-                  height: 52,
+                  width: 44,
+                  height: 44,
                   decoration: BoxDecoration(
                     color: TupicColors.selected,
                     shape: BoxShape.circle,
@@ -191,7 +195,7 @@ class CreateChannelCard extends StatelessWidget {
                     color: TupicColors.accentViolet,
                   ),
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Text(

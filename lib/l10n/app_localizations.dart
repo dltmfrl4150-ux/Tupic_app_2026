@@ -143,8 +143,428 @@ abstract class AppLocalizations {
   /// No description provided for @menuImportSharedChannel.
   ///
   /// In en, this message translates to:
-  /// **'Import shared channel'**
+  /// **'Explore channels'**
   String get menuImportSharedChannel;
+
+  /// No description provided for @exploreChannelsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore channels'**
+  String get exploreChannelsTitle;
+
+  /// No description provided for @exploreBannerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore channels'**
+  String get exploreBannerTitle;
+
+  /// No description provided for @exploreBannerBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover channels made by other people.'**
+  String get exploreBannerBody;
+
+  /// No description provided for @exploreBannerCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse channels'**
+  String get exploreBannerCta;
+
+  /// No description provided for @homeExploreViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get homeExploreViewAll;
+
+  /// No description provided for @homeExploreSearchEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Search channels or content'**
+  String get homeExploreSearchEntry;
+
+  /// No description provided for @homeExploreCategoryPopular.
+  ///
+  /// In en, this message translates to:
+  /// **'Popular'**
+  String get homeExploreCategoryPopular;
+
+  /// No description provided for @homeExploreCategoryLatest.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest'**
+  String get homeExploreCategoryLatest;
+
+  /// No description provided for @exploreSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What channel are you looking for?'**
+  String get exploreSearchHint;
+
+  /// No description provided for @exploreSearchPrefixHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefix search on channel title (case-sensitive).'**
+  String get exploreSearchPrefixHint;
+
+  /// No description provided for @exploreSearchComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Search is coming soon.'**
+  String get exploreSearchComingSoon;
+
+  /// No description provided for @exploreCategoryComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Category filters are coming soon.'**
+  String get exploreCategoryComingSoon;
+
+  /// No description provided for @exploreRecommendedSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended channels'**
+  String get exploreRecommendedSection;
+
+  /// No description provided for @exploreLatestSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest channels'**
+  String get exploreLatestSection;
+
+  /// No description provided for @exploreEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No shared channels yet.'**
+  String get exploreEmptyTitle;
+
+  /// No description provided for @exploreEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Be the first to share a channel!'**
+  String get exploreEmptyBody;
+
+  /// No description provided for @exploreLoadFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load shared channels.'**
+  String get exploreLoadFailedTitle;
+
+  /// No description provided for @exploreLoadFailedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your connection and try again.'**
+  String get exploreLoadFailedBody;
+
+  /// No description provided for @exploreLoadMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Load more'**
+  String get exploreLoadMore;
+
+  /// No description provided for @exploreShareMyChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Share my channel'**
+  String get exploreShareMyChannel;
+
+  /// No description provided for @exploreShareComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel sharing is on the way.'**
+  String get exploreShareComingSoon;
+
+  /// No description provided for @exploreNoLocalChannelsToShare.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no channels to share yet. Create a channel first.'**
+  String get exploreNoLocalChannelsToShare;
+
+  /// No description provided for @sharePreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared channel'**
+  String get sharePreviewTitle;
+
+  /// No description provided for @sharePreviewUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This shared channel is unavailable.'**
+  String get sharePreviewUnavailable;
+
+  /// No description provided for @sharePreviewVideosSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared videos'**
+  String get sharePreviewVideosSection;
+
+  /// No description provided for @sharePreviewAddChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Add channel'**
+  String get sharePreviewAddChannel;
+
+  /// No description provided for @sharePreviewAddVideos.
+  ///
+  /// In en, this message translates to:
+  /// **'Add videos to my channel'**
+  String get sharePreviewAddVideos;
+
+  /// No description provided for @shareVersionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'v{version}'**
+  String shareVersionLabel(int version);
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @exploreCategoryAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get exploreCategoryAll;
+
+  /// No description provided for @exploreCategoryKids.
+  ///
+  /// In en, this message translates to:
+  /// **'Kids'**
+  String get exploreCategoryKids;
+
+  /// No description provided for @exploreCategoryEducation.
+  ///
+  /// In en, this message translates to:
+  /// **'Education'**
+  String get exploreCategoryEducation;
+
+  /// No description provided for @exploreCategoryMusic.
+  ///
+  /// In en, this message translates to:
+  /// **'Music'**
+  String get exploreCategoryMusic;
+
+  /// No description provided for @exploreCategoryEntertainment.
+  ///
+  /// In en, this message translates to:
+  /// **'Entertainment'**
+  String get exploreCategoryEntertainment;
+
+  /// No description provided for @exploreCategoryGames.
+  ///
+  /// In en, this message translates to:
+  /// **'Games'**
+  String get exploreCategoryGames;
+
+  /// No description provided for @exploreCategorySports.
+  ///
+  /// In en, this message translates to:
+  /// **'Sports'**
+  String get exploreCategorySports;
+
+  /// No description provided for @exploreCategoryLifestyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifestyle'**
+  String get exploreCategoryLifestyle;
+
+  /// No description provided for @exploreCategoryOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get exploreCategoryOther;
+
+  /// No description provided for @accountNicknameSuggestGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'We suggested your Google name. You can edit it to any public nickname you prefer.'**
+  String get accountNicknameSuggestGoogle;
+
+  /// No description provided for @shareChannelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share channel'**
+  String get shareChannelTitle;
+
+  /// No description provided for @shareChannelAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Share channel'**
+  String get shareChannelAction;
+
+  /// No description provided for @shareAsNewVersionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share as new version'**
+  String get shareAsNewVersionTitle;
+
+  /// No description provided for @shareAsNewVersionAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Share as new version'**
+  String get shareAsNewVersionAction;
+
+  /// No description provided for @shareNewVersionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Existing v{version} stays available, and the current channel will be shared as v{next}.'**
+  String shareNewVersionHint(int version, int next);
+
+  /// No description provided for @shareConfirmNewVersionCheckbox.
+  ///
+  /// In en, this message translates to:
+  /// **'I confirm sharing as a new version'**
+  String get shareConfirmNewVersionCheckbox;
+
+  /// No description provided for @shareConfirmNewVersionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the box to confirm sharing a new version.'**
+  String get shareConfirmNewVersionRequired;
+
+  /// No description provided for @shareCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get shareCategoryLabel;
+
+  /// No description provided for @shareDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (optional)'**
+  String get shareDescriptionLabel;
+
+  /// No description provided for @shareDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a short description for this channel'**
+  String get shareDescriptionHint;
+
+  /// No description provided for @sharePublicNicknameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Public nickname: {nickname}'**
+  String sharePublicNicknameLabel(String nickname);
+
+  /// No description provided for @shareNeedSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to share a channel.'**
+  String get shareNeedSignIn;
+
+  /// No description provided for @shareNeedNickname.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a public nickname before sharing.'**
+  String get shareNeedNickname;
+
+  /// No description provided for @shareNoVideos.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no videos to share. Add videos and try again.'**
+  String get shareNoVideos;
+
+  /// No description provided for @shareTooManyVideos.
+  ///
+  /// In en, this message translates to:
+  /// **'This channel has too many videos to share.'**
+  String get shareTooManyVideos;
+
+  /// No description provided for @shareNonShareableSource.
+  ///
+  /// In en, this message translates to:
+  /// **'This channel includes content that cannot be shared publicly.'**
+  String get shareNonShareableSource;
+
+  /// No description provided for @shareInvalidCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Please choose a category.'**
+  String get shareInvalidCategory;
+
+  /// No description provided for @shareUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharing is unavailable right now. Try again later.'**
+  String get shareUnavailable;
+
+  /// No description provided for @sharePermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to share this channel.'**
+  String get sharePermissionDenied;
+
+  /// No description provided for @sharePublishFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not share the channel. Please try again.'**
+  String get sharePublishFailed;
+
+  /// No description provided for @sharePublishSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel shared as v{version}.'**
+  String sharePublishSuccess(int version);
+
+  /// No description provided for @mySharedChannelsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My shared channels'**
+  String get mySharedChannelsTitle;
+
+  /// No description provided for @mySharedChannelsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You have not shared any channels yet.'**
+  String get mySharedChannelsEmpty;
+
+  /// No description provided for @shareStatusPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Published'**
+  String get shareStatusPublished;
+
+  /// No description provided for @shareStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get shareStatusCancelled;
+
+  /// No description provided for @shareCancelAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel share'**
+  String get shareCancelAction;
+
+  /// No description provided for @shareCancelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this version?'**
+  String get shareCancelTitle;
+
+  /// No description provided for @shareCancelBody.
+  ///
+  /// In en, this message translates to:
+  /// **'「{title}」 v{version} will be hidden from discovery. Channels others already imported are not affected.'**
+  String shareCancelBody(String title, int version);
+
+  /// No description provided for @shareCancelConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel share'**
+  String get shareCancelConfirm;
+
+  /// No description provided for @shareCancelSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'This version is no longer shared.'**
+  String get shareCancelSuccess;
+
+  /// No description provided for @shareCancelFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not cancel sharing.'**
+  String get shareCancelFailed;
 
   /// No description provided for @menuSettings.
   ///
@@ -443,8 +863,20 @@ abstract class AppLocalizations {
   /// No description provided for @accountSignInUnavailable.
   ///
   /// In en, this message translates to:
-  /// **'Google sign-in is unavailable in this build. Use the Android Firebase build.'**
+  /// **'Google sign-in is unavailable here. Use the Android or Chrome (web) Firebase build.'**
   String get accountSignInUnavailable;
+
+  /// No description provided for @accountSignInPopupBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'The sign-in popup was blocked. Allow popups for this site and try again.'**
+  String get accountSignInPopupBlocked;
+
+  /// No description provided for @accountSignInUnauthorizedDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'This web domain is not authorized in Firebase Authentication.'**
+  String get accountSignInUnauthorizedDomain;
 
   /// No description provided for @accountConsentRequired.
   ///
@@ -463,6 +895,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Local channels, videos, and resume data are not shown as owned by this Google account and are not uploaded automatically.'**
   String get accountLocalDataNote;
+
+  /// No description provided for @accountGoogleSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Google account'**
+  String get accountGoogleSectionTitle;
+
+  /// No description provided for @accountPublicNicknameSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Public nickname'**
+  String get accountPublicNicknameSectionTitle;
+
+  /// No description provided for @accountPublicNicknameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown on shared channels. Separate from your Google name and email.'**
+  String get accountPublicNicknameHint;
+
+  /// No description provided for @accountPublicNicknameEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No public nickname yet.'**
+  String get accountPublicNicknameEmpty;
+
+  /// No description provided for @accountPublicNicknameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Public nickname'**
+  String get accountPublicNicknameLabel;
+
+  /// No description provided for @accountSetNickname.
+  ///
+  /// In en, this message translates to:
+  /// **'Set nickname'**
+  String get accountSetNickname;
+
+  /// No description provided for @accountChangeNickname.
+  ///
+  /// In en, this message translates to:
+  /// **'Change nickname'**
+  String get accountChangeNickname;
+
+  /// No description provided for @accountNicknameDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Public nickname'**
+  String get accountNicknameDialogTitle;
+
+  /// No description provided for @accountNicknameSaveSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Public nickname saved.'**
+  String get accountNicknameSaveSuccess;
+
+  /// No description provided for @accountNicknameUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Public profiles are unavailable. Enable Cloud Firestore in the Firebase Console, then try again.'**
+  String get accountNicknameUnavailable;
+
+  /// No description provided for @accountNicknameNotSignedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to save a public nickname.'**
+  String get accountNicknameNotSignedIn;
+
+  /// No description provided for @accountNicknamePermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have permission to edit this profile.'**
+  String get accountNicknamePermissionDenied;
+
+  /// No description provided for @accountNicknameSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the nickname. Please try again.'**
+  String get accountNicknameSaveFailed;
+
+  /// No description provided for @accountNicknameInvalidEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a nickname.'**
+  String get accountNicknameInvalidEmpty;
+
+  /// No description provided for @accountNicknameInvalidLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Nicknames must be 2–20 characters.'**
+  String get accountNicknameInvalidLength;
+
+  /// No description provided for @accountNicknameInvalidChars.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid characters. Email-style names (@) are not allowed.'**
+  String get accountNicknameInvalidChars;
+
+  /// No description provided for @accountNicknameInappropriate.
+  ///
+  /// In en, this message translates to:
+  /// **'This nickname is not allowed.'**
+  String get accountNicknameInappropriate;
 
   /// No description provided for @accountUnder14Policy.
   ///
@@ -548,6 +1082,12 @@ abstract class AppLocalizations {
   /// **'Premium'**
   String get premiumTitle;
 
+  /// No description provided for @premiumDeveloperTestBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium (Developer Test)'**
+  String get premiumDeveloperTestBadge;
+
   /// No description provided for @premiumBody.
   ///
   /// In en, this message translates to:
@@ -590,6 +1130,12 @@ abstract class AppLocalizations {
   /// **'Manage channel'**
   String get manageThisChannel;
 
+  /// No description provided for @channelSettingsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Channel settings'**
+  String get channelSettingsTooltip;
+
   /// No description provided for @channelVideosComingSoon.
   ///
   /// In en, this message translates to:
@@ -602,11 +1148,29 @@ abstract class AppLocalizations {
   /// **'Playback order'**
   String get playOrderLabel;
 
-  /// No description provided for @playOrderSequential.
+  /// No description provided for @playOrderTitleAsc.
   ///
   /// In en, this message translates to:
-  /// **'Sequential'**
-  String get playOrderSequential;
+  /// **'A–Z'**
+  String get playOrderTitleAsc;
+
+  /// No description provided for @playOrderTitleDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Z–A'**
+  String get playOrderTitleDesc;
+
+  /// No description provided for @playOrderNewestAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest added'**
+  String get playOrderNewestAdded;
+
+  /// No description provided for @playOrderOldestAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest added'**
+  String get playOrderOldestAdded;
 
   /// No description provided for @playOrderShuffle.
   ///
@@ -659,7 +1223,7 @@ abstract class AppLocalizations {
   /// No description provided for @parentalGateBody.
   ///
   /// In en, this message translates to:
-  /// **'Enter your birth year to continue to kids channel management.'**
+  /// **'Enter your birth year to switch from a kids channel to a general channel during playback.'**
   String get parentalGateBody;
 
   /// No description provided for @parentalGateHint.
@@ -689,7 +1253,7 @@ abstract class AppLocalizations {
   /// No description provided for @parentalGateDisclaimer.
   ///
   /// In en, this message translates to:
-  /// **'This is a simple access check, not legal age verification.'**
+  /// **'This is a simple access check, not legal age verification. Birth year is not stored.'**
   String get parentalGateDisclaimer;
 
   /// No description provided for @importSharedPlaceholder.
@@ -716,6 +1280,18 @@ abstract class AppLocalizations {
   /// **'Paste a YouTube link'**
   String get addContentUrlHint;
 
+  /// No description provided for @openYoutubeTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Open YouTube'**
+  String get openYoutubeTooltip;
+
+  /// No description provided for @openYoutubeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to open YouTube.'**
+  String get openYoutubeFailed;
+
   /// No description provided for @paste.
   ///
   /// In en, this message translates to:
@@ -727,6 +1303,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Analyze'**
   String get analyzeUrl;
+
+  /// No description provided for @confirmContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Check content'**
+  String get confirmContent;
+
+  /// No description provided for @addSingleVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Add video'**
+  String get addSingleVideo;
+
+  /// No description provided for @addSelectedVideos.
+  ///
+  /// In en, this message translates to:
+  /// **'Add selected videos'**
+  String get addSelectedVideos;
+
+  /// No description provided for @checkNewVideos.
+  ///
+  /// In en, this message translates to:
+  /// **'Check for new videos'**
+  String get checkNewVideos;
+
+  /// No description provided for @contentNothingSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one video to add.'**
+  String get contentNothingSelected;
+
+  /// No description provided for @contentImportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Added {count} video(s).'**
+  String contentImportSuccess(int count);
+
+  /// No description provided for @contentImportPartial.
+  ///
+  /// In en, this message translates to:
+  /// **'Added {imported} video(s). {omitted} were skipped due to the limit.'**
+  String contentImportPartial(int imported, int omitted);
+
+  /// No description provided for @contentCreatorResolveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not find this creator channel. Check the link.'**
+  String get contentCreatorResolveFailed;
+
+  /// No description provided for @previewSortTitleAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'Title A–Z'**
+  String get previewSortTitleAsc;
+
+  /// No description provided for @previewSortTitleDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Title Z–A'**
+  String get previewSortTitleDesc;
+
+  /// No description provided for @previewSortNewest.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest uploads'**
+  String get previewSortNewest;
+
+  /// No description provided for @previewSortOldest.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest uploads'**
+  String get previewSortOldest;
+
+  /// No description provided for @selectAllVideos.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get selectAllVideos;
+
+  /// No description provided for @clearVideoSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear selection'**
+  String get clearVideoSelection;
+
+  /// No description provided for @loadMoreVideos.
+  ///
+  /// In en, this message translates to:
+  /// **'Load more'**
+  String get loadMoreVideos;
+
+  /// No description provided for @noNewCreatorVideos.
+  ///
+  /// In en, this message translates to:
+  /// **'No new videos to add.'**
+  String get noNewCreatorVideos;
 
   /// No description provided for @registerContent.
   ///
@@ -997,6 +1669,42 @@ abstract class AppLocalizations {
   /// **'Cleaned {pruned} previously saved unplayable videos'**
   String playlistFetchReportPruned(int pruned);
 
+  /// No description provided for @contentAgeRestrictedBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Age-restricted YouTube videos cannot be added.'**
+  String get contentAgeRestrictedBlocked;
+
+  /// No description provided for @contentVideoVerificationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to verify this video. Please try again later.'**
+  String get contentVideoVerificationFailed;
+
+  /// No description provided for @contentProxyConnectionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to reach the video verification server. Please try again later.'**
+  String get contentProxyConnectionFailed;
+
+  /// No description provided for @contentProxyQuotaExceeded.
+  ///
+  /// In en, this message translates to:
+  /// **'The video verification request limit has been reached.'**
+  String get contentProxyQuotaExceeded;
+
+  /// No description provided for @contentProxyVerifyFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to verify this video.'**
+  String get contentProxyVerifyFailed;
+
+  /// No description provided for @playlistAgeRestrictedExcluded.
+  ///
+  /// In en, this message translates to:
+  /// **'Excluded {count} age-restricted videos.'**
+  String playlistAgeRestrictedExcluded(int count);
+
   /// No description provided for @localServerRequired.
   ///
   /// In en, this message translates to:
@@ -1086,6 +1794,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Restore to playback'**
   String get restoreVideo;
+
+  /// No description provided for @editVideoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit title'**
+  String get editVideoTitle;
+
+  /// No description provided for @editVideoTitleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit video title'**
+  String get editVideoTitleTitle;
+
+  /// No description provided for @editVideoTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Display title'**
+  String get editVideoTitleLabel;
+
+  /// No description provided for @restoreOriginalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore original title'**
+  String get restoreOriginalTitle;
+
+  /// No description provided for @originalVideoTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Original: {title}'**
+  String originalVideoTitleHint(String title);
 
   /// No description provided for @videoExcluded.
   ///

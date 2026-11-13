@@ -21,7 +21,10 @@ class GoogleSignInFailure extends GoogleSignInOutcome {
   final String message;
 }
 
-/// Google Sign-In → Firebase Auth credential exchange.
+/// Google Sign-In → Firebase Auth.
+///
+/// - Android: `google_sign_in` + ID token credential (unchanged).
+/// - Web: Firebase Auth `GoogleAuthProvider` + `signInWithPopup`.
 ///
 /// Requests only basic profile/email identity scopes needed for Auth.
 /// Does not request YouTube or other Google API data scopes.
@@ -44,6 +47,7 @@ class GoogleAuthService {
   bool _initialized = false;
 
   Future<void> ensureInitialized() async {
+    if (kIsWeb) return;
     if (_initialized) return;
     await _googleSignIn.initialize(serverClientId: serverClientId);
     _initialized = true;
@@ -54,6 +58,40 @@ class GoogleAuthService {
   User? get currentUser => _auth.currentUser;
 
   Future<GoogleSignInOutcome> signInWithGoogle() async {
+    if (kIsWeb) {
+      return _signInWithGoogleWeb();
+    }
+    return _signInWithGoogleAndroid();
+  }
+
+  Future<GoogleSignInOutcome> _signInWithGoogleWeb() async {
+    try {
+      final provider = GoogleAuthProvider();
+      provider.addScope('email');
+      provider.addScope('profile');
+      provider.setCustomParameters(const {'prompt': 'select_account'});
+
+      final credentialResult = await _auth.signInWithPopup(provider);
+      final user = credentialResult.user;
+      if (user == null) {
+        return const GoogleSignInFailure('Firebase Auth returned no user.');
+      }
+      return GoogleSignInSuccess(user);
+    } on FirebaseAuthException catch (e) {
+      debugPrint('FirebaseAuthException(web) code=${e.code}');
+      if (_isPopupCanceled(e.code)) {
+        return const GoogleSignInCanceled();
+      }
+      return GoogleSignInFailure(_mapFirebaseException(e));
+    } catch (e) {
+      debugPrint('Google sign-in (web) failed: $e');
+      return const GoogleSignInFailure(
+        'Google sign-in failed. Please try again.',
+      );
+    }
+  }
+
+  Future<GoogleSignInOutcome> _signInWithGoogleAndroid() async {
     try {
       await ensureInitialized();
       if (!_googleSignIn.supportsAuthenticate()) {
@@ -95,14 +133,18 @@ class GoogleAuthService {
   }
 
   Future<void> signOut() async {
-    try {
-      await ensureInitialized();
-      await _googleSignIn.signOut();
-    } catch (e) {
-      debugPrint('Google signOut ignored error: $e');
+    if (!kIsWeb) {
+      try {
+        await ensureInitialized();
+        await _googleSignIn.signOut();
+      } catch (e) {
+        debugPrint('Google signOut ignored error: $e');
+      }
     }
     await _auth.signOut();
   }
+
+  bool _isPopupCanceled(String code) => isFirebaseAuthPopupCanceled(code);
 
   String _mapGoogleException(GoogleSignInException e) {
     return switch (e.code) {
@@ -121,14 +163,30 @@ class GoogleAuthService {
   }
 
   String _mapFirebaseException(FirebaseAuthException e) {
-    return switch (e.code) {
-      'network-request-failed' =>
-        'Network error. Check your connection and try again.',
-      'user-disabled' => 'This account has been disabled.',
-      'invalid-credential' => 'Invalid Google credential. Please try again.',
-      'account-exists-with-different-credential' =>
-        'An account already exists with a different sign-in method.',
-      _ => 'Sign-in failed. Please try again.',
-    };
+    return mapFirebaseAuthExceptionMessage(e.code);
   }
+}
+
+/// Whether a Firebase Auth error code means the user dismissed the popup.
+bool isFirebaseAuthPopupCanceled(String code) {
+  return code == 'popup-closed-by-user' || code == 'cancelled-popup-request';
+}
+
+/// User-facing message for Firebase Auth error codes (Android + Web).
+String mapFirebaseAuthExceptionMessage(String code) {
+  return switch (code) {
+    'popup-blocked' =>
+      'The sign-in popup was blocked. Allow popups for this site and try again.',
+    'network-request-failed' =>
+      'Network error. Check your connection and try again.',
+    'user-disabled' => 'This account has been disabled.',
+    'invalid-credential' => 'Invalid Google credential. Please try again.',
+    'operation-not-allowed' =>
+      'Google sign-in is not enabled for this Firebase project.',
+    'unauthorized-domain' =>
+      'This web domain is not authorized in Firebase Authentication.',
+    'account-exists-with-different-credential' =>
+      'An account already exists with a different sign-in method.',
+    _ => 'Sign-in failed. Please try again.',
+  };
 }
