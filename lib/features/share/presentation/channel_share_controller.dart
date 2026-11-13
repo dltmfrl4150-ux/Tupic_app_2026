@@ -8,6 +8,7 @@ import '../../../shared/models/shared_channel_category.dart';
 import '../../../shared/models/tupic_channel.dart';
 import '../../../shared/repositories/channel_share_repository.dart';
 import '../../auth/presentation/auth_controller.dart';
+import '../../explore/presentation/shared_catalog_freshness.dart';
 import '../../profile/presentation/public_profile_controller.dart';
 
 class ChannelShareController extends ChangeNotifier {
@@ -15,13 +16,18 @@ class ChannelShareController extends ChangeNotifier {
     required AuthController authController,
     required PublicProfileController profileController,
     required ChannelShareRepository repository,
+    SharedCatalogFreshness? catalogFreshness,
   }) : _auth = authController,
        _profile = profileController,
-       _repository = repository;
+       _repository = repository,
+       _catalogFreshness = catalogFreshness;
 
   final AuthController _auth;
   final PublicProfileController _profile;
   final ChannelShareRepository _repository;
+  final SharedCatalogFreshness? _catalogFreshness;
+
+  void _invalidateCatalog() => _catalogFreshness?.markDirty();
 
   bool _publishing = false;
   bool _loadingMine = false;
@@ -98,6 +104,7 @@ class ChannelShareController extends ChangeNotifier {
         ),
       );
       _myPosts = [post, ..._myPosts.where((p) => p.id != post.id)];
+      _invalidateCatalog();
       if (kDebugMode) {
         debugPrint(
           'ChannelShare publish ok: version=${post.version} postIdLen=${post.id.length}',
@@ -181,6 +188,7 @@ class ChannelShareController extends ChangeNotifier {
       _myPosts = _myPosts
           .map((p) => p.id == updated.id ? updated : p)
           .toList(growable: false);
+      _invalidateCatalog();
       notifyListeners();
       return true;
     } on SharePermissionDeniedException {

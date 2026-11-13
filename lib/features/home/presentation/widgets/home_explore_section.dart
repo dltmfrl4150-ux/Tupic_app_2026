@@ -4,6 +4,9 @@ import '../../../../app/theme/tupic_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/models/shared_channel_category.dart';
 import '../../../../shared/models/shared_channel_listing.dart';
+import '../../../../shared/repositories/shared_channel_catalog_repository.dart';
+import '../../../explore/presentation/shared_catalog_error_text.dart';
+import '../../../explore/presentation/shared_catalog_freshness.dart';
 import '../../../explore/presentation/shared_catalog_scope.dart';
 import '../../../explore/presentation/shared_channel_preview_page.dart';
 
@@ -26,11 +29,40 @@ class _HomeExploreSectionState extends State<HomeExploreSection> {
   List<SharedChannelListing> _listings = const [];
   bool _loading = true;
   bool _failed = false;
+  SharedCatalogFailureCode? _failureCode;
+  SharedCatalogFreshness? _freshness;
+  int _seenGeneration = -1;
+  int _loadToken = 0;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _load());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final freshness = SharedCatalogScope.maybeFreshnessOf(context);
+    if (!identical(freshness, _freshness)) {
+      _freshness?.removeListener(_onFreshness);
+      _freshness = freshness;
+      _freshness?.addListener(_onFreshness);
+      _seenGeneration = freshness?.generation ?? -1;
+    }
+  }
+
+  @override
+  void dispose() {
+    _freshness?.removeListener(_onFreshness);
+    super.dispose();
+  }
+
+  void _onFreshness() {
+    final gen = _freshness?.generation;
+    if (gen == null || gen == _seenGeneration) return;
+    _seenGeneration = gen;
+    _load();
   }
 
   Future<void> _load() async {
@@ -40,27 +72,32 @@ class _HomeExploreSectionState extends State<HomeExploreSection> {
       setState(() {
         _loading = false;
         _failed = false;
+        _failureCode = null;
         _listings = const [];
       });
       return;
     }
+    final token = ++_loadToken;
     setState(() {
       _loading = true;
       _failed = false;
+      _failureCode = null;
     });
     try {
       final page = await catalog.listLatest(limit: 6);
-      if (!mounted) return;
+      if (!mounted || token != _loadToken) return;
       setState(() {
         _listings = page.items;
         _loading = false;
         _failed = false;
+        _failureCode = null;
       });
-    } catch (_) {
-      if (!mounted) return;
+    } catch (error) {
+      if (!mounted || token != _loadToken) return;
       setState(() {
         _loading = false;
         _failed = true;
+        _failureCode = sharedCatalogFailureCodeOf(error);
         _listings = const [];
       });
     }
@@ -212,7 +249,7 @@ class _HomeExploreSectionState extends State<HomeExploreSection> {
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 4),
             child: _HomeExploreBanner(
               keyName: 'home_explore_error',
-              text: l10n.exploreLoadFailedTitle,
+              text: sharedCatalogErrorText(l10n, _failureCode).title,
               actionLabel: l10n.retry,
               onAction: _load,
             ),

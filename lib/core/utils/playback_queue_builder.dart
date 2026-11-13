@@ -9,6 +9,24 @@ import 'title_sort.dart';
 class PlaybackQueueBuilder {
   const PlaybackQueueBuilder();
 
+  /// Dedupes and sorts an already-selected video list (no source linking).
+  /// Used for shared-snapshot playback and other in-memory queues.
+  List<ChannelVideo> buildOrderedVideos({
+    required List<ChannelVideo> videos,
+    required PlayOrder playOrder,
+    Random? random,
+  }) {
+    final seen = <String>{};
+    final unique = <ChannelVideo>[];
+    for (final video in videos) {
+      if (video.isExcluded) continue;
+      if (seen.add(video.youtubeVideoId)) {
+        unique.add(video);
+      }
+    }
+    return _sorted(unique, playOrder, random);
+  }
+
   /// Builds a deduped queue for a channel.
   ///
   /// Rules:

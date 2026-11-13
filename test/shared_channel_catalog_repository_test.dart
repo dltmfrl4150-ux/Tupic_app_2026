@@ -1,4 +1,6 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tupic/features/explore/data/firestore_shared_channel_catalog_repository.dart';
 import 'package:tupic/shared/models/share_models.dart';
 import 'package:tupic/shared/models/shared_channel_category.dart';
 import 'package:tupic/shared/repositories/shared_channel_catalog_repository.dart';
@@ -126,5 +128,38 @@ void main() {
     expect((await repo.getPublishedPost('ok'))?.title, 'Ok');
     expect(await repo.getPublishedPost('no'), isNull);
     expect(await repo.getPublishedPost('missing'), isNull);
+  });
+
+  test('maps Firestore errors to catalog failure codes', () {
+    expect(
+      FirestoreSharedChannelCatalogRepository.mapFirebase(
+        FirebaseException(
+          plugin: 'cloud_firestore',
+          code: 'failed-precondition',
+          message: 'The query requires an index. You can create it here: https://…',
+        ),
+      ).code,
+      SharedCatalogFailureCode.indexRequired,
+    );
+    expect(
+      FirestoreSharedChannelCatalogRepository.mapFirebase(
+        FirebaseException(
+          plugin: 'cloud_firestore',
+          code: 'permission-denied',
+          message: 'Missing or insufficient permissions.',
+        ),
+      ).code,
+      SharedCatalogFailureCode.permissionDenied,
+    );
+    expect(
+      FirestoreSharedChannelCatalogRepository.mapFirebase(
+        FirebaseException(
+          plugin: 'cloud_firestore',
+          code: 'unavailable',
+          message: 'Unable to resolve host',
+        ),
+      ).code,
+      SharedCatalogFailureCode.network,
+    );
   });
 }

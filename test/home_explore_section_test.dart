@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tupic/features/explore/presentation/shared_catalog_freshness.dart';
 import 'package:tupic/features/explore/presentation/shared_catalog_scope.dart';
 import 'package:tupic/features/home/presentation/widgets/home_explore_section.dart';
 import 'package:tupic/l10n/app_localizations.dart';
@@ -58,6 +59,7 @@ void main() {
     await tester.pumpWidget(
       SharedCatalogScope(
         catalog: const EmptySharedChannelCatalogRepository(),
+        freshness: SharedCatalogFreshness(),
         child: MaterialApp(
           locale: const Locale('ko'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -113,9 +115,11 @@ void main() {
       nicknames: const {'u1': '닉네임A'},
     );
 
+    final freshness = SharedCatalogFreshness();
     await tester.pumpWidget(
       SharedCatalogScope(
         catalog: catalog,
+        freshness: freshness,
         child: MaterialApp(
           locale: const Locale('ko'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -139,6 +143,58 @@ void main() {
     expect(find.byKey(const Key('home_explore_empty')), findsNothing);
   });
 
+  testWidgets('home explore reloads when catalog freshness is marked dirty', (
+    tester,
+  ) async {
+    final catalog = MemorySharedChannelCatalogRepository(
+      posts: [
+        _post(id: 'p1', title: 'Keep Me'),
+        _post(id: 'p2', title: 'Cancel Me'),
+      ],
+    );
+    final freshness = SharedCatalogFreshness();
+
+    await tester.pumpWidget(
+      SharedCatalogScope(
+        catalog: catalog,
+        freshness: freshness,
+        child: MaterialApp(
+          locale: const Locale('ko'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: HomeExploreSection(
+              onOpenExplore: () {},
+              onOpenSearch: () {},
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+    await tester.pump();
+
+    expect(find.text('Keep Me'), findsOneWidget);
+    expect(find.text('Cancel Me'), findsOneWidget);
+
+    catalog.replacePosts([
+      _post(id: 'p1', title: 'Keep Me'),
+      _post(
+        id: 'p2',
+        title: 'Cancel Me',
+        status: SharePostStatus.cancelled,
+      ),
+    ]);
+    freshness.markDirty();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+    await tester.pump();
+
+    expect(find.text('Keep Me'), findsOneWidget);
+    expect(find.text('Cancel Me'), findsNothing);
+  });
+
   testWidgets('narrow layout does not overflow empty explore section', (
     tester,
   ) async {
@@ -148,6 +204,7 @@ void main() {
     await tester.pumpWidget(
       SharedCatalogScope(
         catalog: const EmptySharedChannelCatalogRepository(),
+        freshness: SharedCatalogFreshness(),
         child: MaterialApp(
           locale: const Locale('ko'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,

@@ -9,6 +9,8 @@ import '../../../shared/models/shared_channel_listing.dart';
 import '../../../shared/repositories/shared_channel_catalog_repository.dart';
 import '../../share/presentation/my_shared_channels_page.dart';
 import 'select_channel_to_share_page.dart';
+import 'shared_catalog_error_text.dart';
+import 'shared_catalog_freshness.dart';
 import 'shared_catalog_scope.dart';
 import 'shared_channel_preview_page.dart';
 
@@ -34,7 +36,10 @@ class _ChannelExplorePageState extends State<ChannelExplorePage> {
   bool _loading = true;
   bool _loadingMore = false;
   bool _failed = false;
+  SharedCatalogFailureCode? _failureCode;
   Timer? _debounce;
+  SharedCatalogFreshness? _freshness;
+  int _seenGeneration = -1;
 
   SharedChannelCatalogRepository _catalog(BuildContext context) =>
       widget.catalogOverride ?? SharedCatalogScope.of(context);
@@ -46,16 +51,37 @@ class _ChannelExplorePageState extends State<ChannelExplorePage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final freshness = SharedCatalogScope.maybeFreshnessOf(context);
+    if (!identical(freshness, _freshness)) {
+      _freshness?.removeListener(_onFreshness);
+      _freshness = freshness;
+      _freshness?.addListener(_onFreshness);
+      _seenGeneration = freshness?.generation ?? -1;
+    }
+  }
+
+  @override
   void dispose() {
+    _freshness?.removeListener(_onFreshness);
     _debounce?.cancel();
     _searchController.dispose();
     super.dispose();
+  }
+
+  void _onFreshness() {
+    final gen = _freshness?.generation;
+    if (gen == null || gen == _seenGeneration) return;
+    _seenGeneration = gen;
+    _reload();
   }
 
   Future<void> _reload() async {
     setState(() {
       _loading = true;
       _failed = false;
+      _failureCode = null;
       _items = const [];
       _cursor = null;
       _hasMore = false;
@@ -90,13 +116,15 @@ class _ChannelExplorePageState extends State<ChannelExplorePage> {
         _loading = false;
         _loadingMore = false;
         _failed = false;
+        _failureCode = null;
       });
-    } catch (_) {
+    } catch (error) {
       if (!mounted) return;
       setState(() {
         _loading = false;
         _loadingMore = false;
         _failed = true;
+        _failureCode = sharedCatalogFailureCodeOf(error);
         if (reset) _items = const [];
       });
     }
@@ -136,6 +164,7 @@ class _ChannelExplorePageState extends State<ChannelExplorePage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final empty = !_loading && !_failed && _items.isEmpty;
+    final failureCopy = sharedCatalogErrorText(l10n, _failureCode);
 
     return Scaffold(
       backgroundColor: TupicColors.mainBackground,
@@ -205,8 +234,8 @@ class _ChannelExplorePageState extends State<ChannelExplorePage> {
               )
             else if (_failed)
               _ExploreMessage(
-                title: l10n.exploreLoadFailedTitle,
-                body: l10n.exploreLoadFailedBody,
+                title: failureCopy.title,
+                body: failureCopy.body,
                 actionLabel: l10n.retry,
                 onAction: _reload,
               )

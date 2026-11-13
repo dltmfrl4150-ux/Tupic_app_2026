@@ -9,6 +9,7 @@ import '../features/content/data/local_content_repository.dart';
 import '../features/content/data/playlist_video_fetcher.dart';
 import '../features/content/presentation/content_controller.dart';
 import '../features/explore/data/firestore_shared_channel_catalog_repository.dart';
+import '../features/explore/presentation/shared_catalog_freshness.dart';
 import '../features/explore/presentation/shared_catalog_scope.dart';
 import '../features/home/data/mock_home_repository.dart';
 import '../features/home/presentation/home_controller.dart';
@@ -138,19 +139,23 @@ class _TupicAppState extends State<TupicApp> {
               'Firebase/Firestore is not ready on this build.',
             ));
 
+  late final SharedChannelCatalogRepository _sharedCatalog =
+      widget.sharedChannelCatalogRepository ??
+      (widget.firebaseReady
+          ? FirestoreSharedChannelCatalogRepository()
+          : const EmptySharedChannelCatalogRepository());
+
+  late final SharedCatalogFreshness _sharedCatalogFreshness =
+      SharedCatalogFreshness();
+
   late final ChannelShareController _channelShareController =
       widget.channelShareController ??
       ChannelShareController(
         authController: _authController,
         profileController: _publicProfileController,
         repository: _channelShareRepository,
+        catalogFreshness: _sharedCatalogFreshness,
       );
-
-  late final SharedChannelCatalogRepository _sharedCatalog =
-      widget.sharedChannelCatalogRepository ??
-      (widget.firebaseReady
-          ? FirestoreSharedChannelCatalogRepository()
-          : const EmptySharedChannelCatalogRepository());
 
   bool _ownsChannelsController = false;
   bool _ownsContentController = false;
@@ -178,6 +183,7 @@ class _TupicAppState extends State<TupicApp> {
     if (_ownsChannelShareController) {
       _channelShareController.dispose();
     }
+    _sharedCatalogFreshness.dispose();
     if (_ownsPublicProfileController) {
       _publicProfileController.dispose();
     }
@@ -205,6 +211,7 @@ class _TupicAppState extends State<TupicApp> {
             controller: _channelShareController,
             child: SharedCatalogScope(
               catalog: _sharedCatalog,
+              freshness: _sharedCatalogFreshness,
               child: ChannelsScope(
                 controller: _channelsController,
                 child: ContentScope(

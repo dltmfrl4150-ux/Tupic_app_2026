@@ -76,13 +76,9 @@ class FirestoreSharedChannelCatalogRepository
       final post = _postFrom(snap.id, snap.data());
       if (post == null || !post.isPublished) return null;
       return post;
-    } on FirebaseException catch (e) {
-      if (kDebugMode) {
-        debugPrint(
-          'SharedCatalog getPublishedPost: code=${e.code} message=${e.message}',
-        );
-      }
-      rethrow;
+    } on FirebaseException catch (e, st) {
+      _logFirebase('getPublishedPost', e, st);
+      Error.throwWithStackTrace(_mapFirebase(e), st);
     }
   }
 
@@ -142,14 +138,35 @@ class FirestoreSharedChannelCatalogRepository
         cursor: last == null ? null : SharedCatalogCursor(last),
         hasMore: hasMore,
       );
-    } on FirebaseException catch (e) {
-      if (kDebugMode) {
-        debugPrint(
-          'SharedCatalog query: code=${e.code} message=${e.message}',
-        );
-      }
-      rethrow;
+    } on FirebaseException catch (e, st) {
+      _logFirebase('query', e, st);
+      Error.throwWithStackTrace(_mapFirebase(e), st);
     }
+  }
+
+  static void _logFirebase(String op, FirebaseException e, StackTrace st) {
+    if (!kDebugMode) return;
+    debugPrint(
+      'SharedCatalog $op: code=${e.code} message=${e.message}\n$st',
+    );
+  }
+
+  /// Maps Firestore errors for UI; exposed for unit tests.
+  static SharedCatalogException mapFirebase(FirebaseException e) =>
+      _mapFirebase(e);
+
+  static SharedCatalogException _mapFirebase(FirebaseException e) {
+    final message = e.message;
+    final code = switch (e.code) {
+      'failed-precondition'
+          when (message ?? '').toLowerCase().contains('index') =>
+        SharedCatalogFailureCode.indexRequired,
+      'failed-precondition' => SharedCatalogFailureCode.indexRequired,
+      'permission-denied' => SharedCatalogFailureCode.permissionDenied,
+      'unavailable' || 'deadline-exceeded' => SharedCatalogFailureCode.network,
+      _ => SharedCatalogFailureCode.unknown,
+    };
+    return SharedCatalogException(code, message: message, cause: e);
   }
 
   static SharePost? _postFrom(String id, Map<String, dynamic>? data) {

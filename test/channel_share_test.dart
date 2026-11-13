@@ -2,6 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tupic/features/auth/presentation/auth_controller.dart';
 import 'package:tupic/features/profile/data/memory_public_profile_repository.dart';
 import 'package:tupic/features/profile/presentation/public_profile_controller.dart';
+import 'package:tupic/shared/models/public_profile.dart';
+import 'package:tupic/features/explore/presentation/shared_catalog_freshness.dart';
 import 'package:tupic/features/share/data/memory_channel_share_repository.dart';
 import 'package:tupic/features/share/domain/share_snapshot_builder.dart';
 import 'package:tupic/features/share/presentation/channel_share_controller.dart';
@@ -192,6 +194,55 @@ void main() {
       expect(controller.errorCode, anyOf('not_signed_in', 'nickname_required'));
       controller.dispose();
       profile.dispose();
+    });
+
+    test('cancel success marks shared catalog freshness dirty', () async {
+      final auth = AuthController(firebaseReady: false);
+      auth.debugEmulateSignedIn(uid: 'uid-1', displayName: 'A');
+      final now = DateTime.utc(2026, 1, 1);
+      final profiles = MemoryPublicProfileRepository(
+        signedInUid: 'uid-1',
+        seed: {
+          'uid-1': PublicProfile(
+            uid: 'uid-1',
+            nickname: 'Nick',
+            updatedAt: now,
+            createdAt: now,
+          ),
+        },
+      );
+      final profile = PublicProfileController(
+        authController: auth,
+        repository: profiles,
+      );
+      await profile.refresh();
+      final shares = MemoryChannelShareRepository(signedInUid: 'uid-1');
+      final freshness = SharedCatalogFreshness();
+      final controller = ChannelShareController(
+        authController: auth,
+        profileController: profile,
+        repository: shares,
+        catalogFreshness: freshness,
+      );
+      addTearDown(() {
+        controller.dispose();
+        profile.dispose();
+        auth.dispose();
+        freshness.dispose();
+      });
+
+      final post = await controller.publish(
+        channel: _channel(),
+        videos: [_video()],
+        sources: [_source()],
+        category: SharedChannelCategory.music,
+      );
+      expect(post, isNotNull);
+      expect(freshness.generation, 1);
+
+      final ok = await controller.cancelPost(post!.id);
+      expect(ok, isTrue);
+      expect(freshness.generation, 2);
     });
   });
 }

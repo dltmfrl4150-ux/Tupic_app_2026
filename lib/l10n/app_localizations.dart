@@ -254,6 +254,36 @@ abstract class AppLocalizations {
   /// **'Check your connection and try again.'**
   String get exploreLoadFailedBody;
 
+  /// No description provided for @exploreLoadFailedUnknownBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again later.'**
+  String get exploreLoadFailedUnknownBody;
+
+  /// No description provided for @exploreLoadFailedIndexTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A Firestore index is required.'**
+  String get exploreLoadFailedIndexTitle;
+
+  /// No description provided for @exploreLoadFailedIndexBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Create the sharePosts composite index in Firebase Console, wait until it is Enabled, then retry.'**
+  String get exploreLoadFailedIndexBody;
+
+  /// No description provided for @exploreLoadFailedPermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You cannot view shared channels.'**
+  String get exploreLoadFailedPermissionTitle;
+
+  /// No description provided for @exploreLoadFailedPermissionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Access was denied by security rules. Sign in or try again later.'**
+  String get exploreLoadFailedPermissionBody;
+
   /// No description provided for @exploreLoadMore.
   ///
   /// In en, this message translates to:
@@ -289,6 +319,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This shared channel is unavailable.'**
   String get sharePreviewUnavailable;
+
+  /// No description provided for @sharePreviewPlayAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Play all'**
+  String get sharePreviewPlayAll;
 
   /// No description provided for @sharePreviewVideosSection.
   ///

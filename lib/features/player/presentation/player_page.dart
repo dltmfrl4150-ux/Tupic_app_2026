@@ -14,6 +14,7 @@ import '../../channels/presentation/parental_gate_dialog.dart';
 import '../../content/presentation/content_controller.dart';
 import '../domain/playback_phase.dart';
 import '../domain/playback_resume.dart';
+import 'playback_progress_scope.dart';
 import 'player_session_controller.dart';
 import 'widgets/player_queue_strip.dart';
 import 'widgets/player_unlock_hold_button.dart';
@@ -228,9 +229,12 @@ class _PlayerPageState extends State<PlayerPage>
       return;
     }
 
-    final progress = widget.progressRepository == null
+    // Prefer live scope so shared-preview sessions (null repo) can switch
+    // into a local channel and resume normal progress persistence.
+    final progressRepository = PlaybackProgressScope.maybeOf(context);
+    final progress = progressRepository == null
         ? null
-        : await widget.progressRepository!.getProgress(channel.id);
+        : await progressRepository.getProgress(channel.id);
     if (!mounted) return;
 
     final plan = PlaybackResume.resolve(
@@ -256,7 +260,7 @@ class _PlayerPageState extends State<PlayerPage>
           queue: List<ChannelVideo>.from(plan.queue),
           initialIndex: plan.index,
           initialStartSeconds: plan.startSeconds,
-          progressRepository: widget.progressRepository,
+          progressRepository: progressRepository,
           resumed: plan.resumed,
         ),
       ),

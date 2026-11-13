@@ -6,6 +6,7 @@ import 'package:tupic/features/channels/data/local_channel_repository.dart';
 import 'package:tupic/features/channels/presentation/channels_controller.dart';
 import 'package:tupic/features/explore/presentation/channel_explore_page.dart';
 import 'package:tupic/features/explore/presentation/select_channel_to_share_page.dart';
+import 'package:tupic/features/explore/presentation/shared_catalog_freshness.dart';
 import 'package:tupic/features/explore/presentation/shared_catalog_scope.dart';
 import 'package:tupic/features/explore/presentation/shared_channel_preview_page.dart';
 import 'package:tupic/features/profile/data/memory_public_profile_repository.dart';
@@ -16,7 +17,38 @@ import 'package:tupic/features/share/presentation/my_shared_channels_page.dart';
 import 'package:tupic/l10n/app_localizations.dart';
 import 'package:tupic/shared/models/share_models.dart';
 import 'package:tupic/shared/models/shared_channel_category.dart';
+import 'package:tupic/shared/models/shared_channel_listing.dart';
 import 'package:tupic/shared/repositories/shared_channel_catalog_repository.dart';
+
+class _ThrowingCatalog implements SharedChannelCatalogRepository {
+  _ThrowingCatalog(this.error);
+
+  final Object error;
+
+  @override
+  Future<SharedCatalogPage> listLatest({
+    SharedChannelCategory category = SharedChannelCategory.all,
+    int limit = 20,
+    SharedCatalogCursor? startAfter,
+  }) async =>
+      throw error;
+
+  @override
+  Future<SharedCatalogPage> searchPrefix({
+    required String query,
+    SharedChannelCategory category = SharedChannelCategory.all,
+    int limit = 20,
+    SharedCatalogCursor? startAfter,
+  }) async =>
+      throw error;
+
+  @override
+  Future<SharePost?> getPublishedPost(String postId) async => throw error;
+
+  @override
+  Future<Map<String, String>> nicknamesFor(Iterable<String> ownerUids) async =>
+      throw error;
+}
 
 SharePost _post({
   required String id,
@@ -70,6 +102,7 @@ Widget _wrapExplore(
   );
   tree = SharedCatalogScope(
     catalog: catalog ?? const EmptySharedChannelCatalogRepository(),
+    freshness: SharedCatalogFreshness(),
     child: tree,
   );
   if (channels != null) {
@@ -99,6 +132,28 @@ void main() {
 
   setUp(() {
     SharedPreferences.setMockInitialValues({});
+  });
+
+  testWidgets('explore page shows index-required failure distinctly', (
+    tester,
+  ) async {
+    final catalog = _ThrowingCatalog(
+      const SharedCatalogException(SharedCatalogFailureCode.indexRequired),
+    );
+    await tester.pumpWidget(
+      _wrapExplore(
+        ChannelExplorePage(catalog: catalog),
+        catalog: catalog,
+      ),
+    );
+    await _pumpLoad(tester);
+
+    expect(find.text('Firestore 인덱스가 필요해요.'), findsOneWidget);
+    expect(
+      find.textContaining('sharePosts 복합 인덱스'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('네트워크 상태를 확인'), findsNothing);
   });
 
   testWidgets('explore page shows empty state and share actions', (

@@ -218,4 +218,28 @@ void main() {
     );
     expect(queue.map((v) => v.youtubeVideoId), ['keepxxxxxxx']);
   });
+
+  test('buildOrderedVideos sorts without source linking', () {
+    const builder = PlaybackQueueBuilder();
+    final queue = builder.buildOrderedVideos(
+      videos: [
+        _video(
+          id: 'bxxxxxxxx',
+          title: 'Beta',
+          addedAt: DateTime.utc(2024, 1, 2),
+          manualOrder: 1,
+          sourceIds: const [],
+        ),
+        _video(
+          id: 'axxxxxxxx',
+          title: 'Alpha',
+          addedAt: DateTime.utc(2024, 1, 1),
+          manualOrder: 0,
+          sourceIds: const [],
+        ),
+      ],
+      playOrder: PlayOrder.titleAsc,
+    );
+    expect(queue.map((v) => v.youtubeVideoId), ['axxxxxxxx', 'bxxxxxxxx']);
+  });
 }

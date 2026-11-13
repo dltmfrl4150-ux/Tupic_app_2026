@@ -2,6 +2,37 @@ import '../models/share_models.dart';
 import '../models/shared_channel_category.dart';
 import '../models/shared_channel_listing.dart';
 
+/// Why a catalog query failed (mapped from Firestore / network).
+enum SharedCatalogFailureCode {
+  /// Composite index missing (Firestore failed-precondition + index message).
+  indexRequired,
+
+  /// Security rules blocked the query/document.
+  permissionDenied,
+
+  /// Transient connectivity / backend availability.
+  network,
+
+  /// Anything else (including parse/state surprises).
+  unknown,
+}
+
+class SharedCatalogException implements Exception {
+  const SharedCatalogException(
+    this.code, {
+    this.message,
+    this.cause,
+  });
+
+  final SharedCatalogFailureCode code;
+  final String? message;
+  final Object? cause;
+
+  @override
+  String toString() =>
+      'SharedCatalogException($code${message == null ? '' : ': $message'})';
+}
+
 /// Read-only catalog of published shared channels (explore / home).
 abstract class SharedChannelCatalogRepository {
   /// Latest published posts (optional category). Home uses a small [limit].
@@ -67,6 +98,13 @@ class MemorySharedChannelCatalogRepository
 
   final List<SharePost> _posts;
   final Map<String, String> _nicknames;
+
+  /// Test helper: replace in-memory posts (e.g. simulate cancel).
+  void replacePosts(List<SharePost> posts) {
+    _posts
+      ..clear()
+      ..addAll(posts);
+  }
 
   List<SharePost> get _published =>
       _posts.where((p) => p.isPublished).toList(growable: false);

@@ -91,6 +91,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exploreLoadFailedBody => 'Check your connection and try again.';
 
   @override
+  String get exploreLoadFailedUnknownBody =>
+      'Something went wrong. Please try again later.';
+
+  @override
+  String get exploreLoadFailedIndexTitle => 'A Firestore index is required.';
+
+  @override
+  String get exploreLoadFailedIndexBody =>
+      'Create the sharePosts composite index in Firebase Console, wait until it is Enabled, then retry.';
+
+  @override
+  String get exploreLoadFailedPermissionTitle =>
+      'You cannot view shared channels.';
+
+  @override
+  String get exploreLoadFailedPermissionBody =>
+      'Access was denied by security rules. Sign in or try again later.';
+
+  @override
   String get exploreLoadMore => 'Load more';
 
   @override
@@ -108,6 +127,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sharePreviewUnavailable => 'This shared channel is unavailable.';
+
+  @override
+  String get sharePreviewPlayAll => 'Play all';
 
   @override
   String get sharePreviewVideosSection => 'Shared videos';

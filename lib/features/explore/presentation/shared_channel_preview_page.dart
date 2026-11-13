@@ -5,7 +5,9 @@ import '../../../core/widgets/coming_soon_dialog.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../shared/models/share_models.dart';
 import '../../../shared/models/shared_channel_category.dart';
+import '../domain/shared_playback_queue.dart';
 import 'shared_catalog_scope.dart';
+import 'shared_playback_launcher.dart';
 
 class SharedChannelPreviewPage extends StatefulWidget {
   const SharedChannelPreviewPage({
@@ -86,10 +88,33 @@ class _SharedChannelPreviewPageState extends State<SharedChannelPreviewPage> {
     };
   }
 
+  bool get _canPlay {
+    final post = _post;
+    if (post == null || !post.isPublished) return false;
+    return SharedPlaybackQueue.build(post) != null;
+  }
+
+  Future<void> _playAll() async {
+    final post = _post;
+    if (post == null) return;
+    await startSharedChannelPlayback(context, post: post);
+  }
+
+  Future<void> _playFrom(ShareSnapshotVideo video) async {
+    final post = _post;
+    if (post == null) return;
+    await startSharedChannelPlayback(
+      context,
+      post: post,
+      startYoutubeVideoId: video.youtubeVideoId,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final post = _post;
+    final canPlay = _canPlay;
 
     return Scaffold(
       backgroundColor: TupicColors.mainBackground,
@@ -155,6 +180,13 @@ class _SharedChannelPreviewPageState extends State<SharedChannelPreviewPage> {
                               style: const TextStyle(height: 1.4),
                             ),
                           ],
+                          const SizedBox(height: 16),
+                          ElevatedButton.icon(
+                            key: const Key('share_preview_play_all'),
+                            onPressed: canPlay ? _playAll : null,
+                            icon: const Icon(Icons.play_arrow_rounded),
+                            label: Text(l10n.sharePreviewPlayAll),
+                          ),
                           const SizedBox(height: 20),
                           Text(
                             l10n.sharePreviewVideosSection,
@@ -164,25 +196,44 @@ class _SharedChannelPreviewPageState extends State<SharedChannelPreviewPage> {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          ...post.snapshot.videos.map(
-                            (v) => Padding(
-                              padding: const EdgeInsets.only(bottom: 8),
-                              child: Material(
-                                color: TupicColors.card,
-                                borderRadius: BorderRadius.circular(12),
-                                child: ListTile(
-                                  title: Text(
-                                    v.title,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
+                          if (post.snapshot.videos.isEmpty)
+                            Text(
+                              l10n.playerEmptyQueue,
+                              style: const TextStyle(
+                                color: TupicColors.mutedText,
+                              ),
+                            )
+                          else
+                            ...post.snapshot.videos.map(
+                              (v) => Padding(
+                                padding: const EdgeInsets.only(bottom: 8),
+                                child: Material(
+                                  color: TupicColors.card,
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: ListTile(
+                                    key: Key(
+                                      'share_preview_video_${v.youtubeVideoId}',
+                                    ),
+                                    onTap: canPlay ? () => _playFrom(v) : null,
+                                    leading: const Icon(
+                                      Icons.play_circle_outline,
+                                      color: TupicColors.accentViolet,
+                                    ),
+                                    title: Text(
+                                      v.title,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    subtitle: v.durationSeconds != null
+                                        ? Text('${v.durationSeconds}s')
+                                        : null,
+                                    trailing: const Icon(
+                                      Icons.chevron_right_rounded,
+                                    ),
                                   ),
-                                  subtitle: v.durationSeconds != null
-                                      ? Text('${v.durationSeconds}s')
-                                      : null,
                                 ),
                               ),
                             ),
-                          ),
                         ],
                       ),
                     ),

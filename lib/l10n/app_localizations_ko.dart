@@ -90,6 +90,23 @@ class AppLocalizationsKo extends AppLocalizations {
   String get exploreLoadFailedBody => '네트워크 상태를 확인한 뒤 다시 시도해 주세요.';
 
   @override
+  String get exploreLoadFailedUnknownBody => '일시적인 오류가 발생했어요. 잠시 후 다시 시도해 주세요.';
+
+  @override
+  String get exploreLoadFailedIndexTitle => 'Firestore 인덱스가 필요해요.';
+
+  @override
+  String get exploreLoadFailedIndexBody =>
+      'Firebase Console에서 sharePosts 복합 인덱스를 생성하고, 활성화될 때까지 기다린 뒤 다시 시도해 주세요.';
+
+  @override
+  String get exploreLoadFailedPermissionTitle => '공유 채널을 볼 수 없어요.';
+
+  @override
+  String get exploreLoadFailedPermissionBody =>
+      '보안 규칙에 의해 접근이 거부되었습니다. 로그인 상태를 확인하거나 잠시 후 다시 시도해 주세요.';
+
+  @override
   String get exploreLoadMore => '더 보기';
 
   @override
@@ -106,6 +123,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get sharePreviewUnavailable => '이 공유 채널을 볼 수 없어요.';
+
+  @override
+  String get sharePreviewPlayAll => '전체 재생';
 
   @override
   String get sharePreviewVideosSection => '공유된 영상';
